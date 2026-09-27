@@ -1,0 +1,5 @@
+.vscode/
+.DS_Store
+Thumbs.db
+_test.html
+_dom*.html
