@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ruta Verde — Arma tu tour por el Quindío</title>
 <meta name="description" content="Guía gratuita del Quindío: arma tu tour por Salento, el Valle del Cocora, Filandia y 12 pueblos del Eje Cafetero. Restaurantes, hospedaje, actividades, mapa, calendario y guía en PDF.">
-<meta name="theme-color" content="#0E2A1E">
+<meta name="theme-color" content="#0A0612">
 <meta name="robots" content="index,follow">
 <link rel="alternate" hreflang="es" href="?lang=es">
 <link rel="alternate" hreflang="en" href="?lang=en">
@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://commons.wikimedia.org/wiki/Special:FilePath/Valle%20del%20Cocora%20junio%202025%2008.jpg?width=1200">
 <meta property="og:image:alt" content="Palmas de cera en el Valle del Cocora">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 32'%3E%3Cpath d='M14 31V12' stroke='%230E2A1E' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M14 12C10 5 4 5 1 8M14 12c4-7 10-7 13-4M14 12C12 5 14 2 14 1M14 12c-5-2-9 1-11 4M14 12c5-2 9 1 11 4' stroke='%235E9A4B' stroke-width='2.6' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 32'%3E%3Cpath d='M14 31V12' stroke='%23FF4D8D' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M14 12C10 5 4 5 1 8M14 12c4-7 10-7 13-4M14 12C12 5 14 2 14 1M14 12c-5-2-9 1-11 4M14 12c5-2 9 1 11 4' stroke='%23FFB35C' stroke-width='2.6' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"TouristDestination","name":"Quindío, Eje Cafetero","description":"Guía gratuita para armar un tour por el Quindío, Colombia.","touristType":["Naturaleza","Cultura cafetera","Familias"],
  "geo":{"@type":"GeoCoordinates","latitude":4.534,"longitude":-75.681},
@@ -27,7 +27,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700;800;900&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -35,15 +35,17 @@
 
 <header class="nav">
   <a class="logo" href="#inicio">
-    <svg width="26" height="30" viewBox="0 0 28 32" fill="none" aria-hidden="true"><path d="M14 31V12" stroke="#0E2A1E" stroke-width="2.5" stroke-linecap="round"/><path d="M14 12C10 5 4 5 1 8M14 12c4-7 10-7 13-4M14 12C12 5 14 2 14 1M14 12c-5-2-9 1-11 4M14 12c5-2 9 1 11 4" stroke="#5E9A4B" stroke-width="2.6" stroke-linecap="round"/></svg>
-    Ruta Verde
+    <svg width="26" height="30" viewBox="0 0 28 32" fill="none" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD36E"/><stop offset=".5" stop-color="#FF7A59"/><stop offset="1" stop-color="#FF4D8D"/></linearGradient></defs><path d="M14 31V12" stroke="url(#lg)" stroke-width="2.5" stroke-linecap="round"/><path d="M14 12C10 5 4 5 1 8M14 12c4-7 10-7 13-4M14 12C12 5 14 2 14 1M14 12c-5-2-9 1-11 4M14 12c5-2 9 1 11 4" stroke="url(#lg)" stroke-width="2.6" stroke-linecap="round"/></svg>
+    <span>Ruta Verde</span>
   </a>
   <nav class="links" id="navLinks">
     <a href="#sugeridos" data-i18n="nav.presets">Tours sugeridos</a>
+    <a href="#mapa" data-i18n="nav.map">Mapa</a>
     <a href="#lugares" data-i18n="nav.places">Lugares</a>
     <a href="#comer" data-i18n="nav.eat">Dónde comer</a>
     <a href="#dormir" data-i18n="nav.sleep">Dónde dormir</a>
     <a href="#pueblos" data-i18n="nav.towns">Pueblos</a>
+    <a href="#postales" data-i18n="nav.gallery">Postales</a>
     <a href="#cuando" data-i18n="nav.when">Cuándo ir</a>
     <a href="#moverse" data-i18n="nav.move">Cómo moverse</a>
   </nav>
@@ -55,15 +57,20 @@
 </header>
 
 <main>
-<!-- HERO -->
+<!-- HERO: al bajar, el título crece y se abre la foto -->
 <section class="hero" id="inicio">
-  <img class="hero-ph" id="heroPh" alt="Palmas de cera en el Valle del Cocora, Quindío" fetchpriority="high">
-  <span class="hero-cred" id="heroCred"></span>
-  <div class="wrap" style="width:100%">
-    <div class="hero-in">
-      <span class="kick" style="animation:up 1s var(--ease) .3s both"><i></i><span data-i18n="hero.kick">Guía gratuita del Eje Cafetero · Quindío</span></span>
-      <h1 class="syne"><span class="row"><span style="animation-delay:.35s" data-i18n="hero.h1a">Arma tu propio</span></span><span class="row"><span style="animation-delay:.5s" data-i18n="hero.h1b">tour por el <em class="serif">Quindío.</em></span></span></h1>
-      <p class="lead" data-i18n="hero.lead">Lugares, restaurantes reales, dónde dormir y qué hacer en 12 pueblos. Organizamos tu recorrido por días con horarios, mapa y cómo llegar, y te llevas la guía en PDF.</p>
+  <div class="hero-stage">
+    <img class="hero-ph" id="heroPh" alt="Palmas de cera en el Valle del Cocora, Quindío" fetchpriority="high">
+    <div class="hero-shade"></div>
+    <div class="hero-logo" aria-hidden="true">
+      <span class="hl-over" data-i18n="hero.over">Ruta Verde presenta</span>
+      <span class="hl-word">Quindío</span>
+      <span class="hl-under" data-i18n="hero.under">Eje Cafetero · Colombia</span>
+    </div>
+    <div class="wrap hero-copy">
+      <span class="kick"><i></i><span data-i18n="hero.kick">Guía gratuita del Eje Cafetero · Quindío</span></span>
+      <h1 class="disp" data-i18n="hero.h1">Arma tu propio tour por el <span class="serif">Quindío</span></h1>
+      <p class="lead" data-i18n="hero.lead">Lugares, restaurantes reales, dónde dormir y qué hacer en 12 pueblos.</p>
       <div class="steps4">
         <div class="s3"><b>1</b><span data-i18n="hero.s1">Elige lugares que quieres ver</span></div>
         <div class="s3"><b>2</b><span data-i18n="hero.s2">Escoge dónde comer</span></div>
@@ -75,22 +82,41 @@
         <a class="btn lite" href="#sugeridos" data-i18n="hero.cta2">Usar un tour sugerido</a>
       </div>
     </div>
+    <span class="hero-scroll"><span data-i18n="hero.scroll">Desliza</span><i></i></span>
+    <span class="hero-cred" id="heroCred"></span>
   </div>
 </section>
 
 <!-- SUGERIDOS -->
 <section class="wrap sec" id="sugeridos">
   <div class="sec-head">
-    <div><span class="kick rv"><i></i><span data-i18n="sec.presetsKick">Para empezar rápido</span></span><h2 class="syne rv" data-i18n="sec.presetsH">Tours <span class="serif">sugeridos</span></h2></div>
+    <div><span class="kick rv"><i></i><span data-i18n="sec.presetsKick">Para empezar rápido</span></span><h2 class="disp rv" data-i18n="sec.presetsH">Tours <span class="serif">sugeridos</span></h2></div>
     <p class="rv" data-i18n="sec.presetsP">Carga uno con un clic: trae lugares, restaurantes y hospedaje por noche. Luego cámbialo a tu gusto.</p>
   </div>
   <div class="presets" id="presets"></div>
 </section>
 
+<!-- MAPA DE LA REGIÓN -->
+<section class="sec regmap" id="mapa">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kick rv"><i></i><span data-i18n="sec.mapKick">Explora la región</span></span><h2 class="disp rv" data-i18n="sec.mapH">El <span class="serif">mapa</span></h2></div>
+      <p class="rv" data-i18n="sec.mapP">Los 12 pueblos y todos los lugares de la guía en un solo mapa.</p>
+    </div>
+  </div>
+  <div class="rm-frame rv">
+    <div id="regionMap" role="region" aria-label="Mapa del Quindío"></div>
+    <div class="rm-ui">
+      <div class="rm-legend"><span><i class="lt"></i><span data-i18n="rmap.towns">Pueblos</span></span><span><i class="lp"></i><span data-i18n="rmap.places">Lugares</span></span><span><i class="li"></i><span data-i18n="rmap.inTour">En tu tour</span></span></div>
+      <button type="button" class="btn lite sm" id="rmReset" data-i18n="rmap.reset">Ver todo el Quindío</button>
+    </div>
+  </div>
+</section>
+
 <!-- LUGARES -->
-<section class="wrap sec" id="lugares" style="padding-top:40px">
+<section class="wrap sec" id="lugares">
   <div class="sec-head">
-    <div><span class="kick rv"><i></i><span data-i18n="sec.placesKick">Paso 1</span></span><h2 class="syne rv" data-i18n="sec.placesH">¿A dónde <span class="serif">ir?</span></h2></div>
+    <div><span class="kick rv"><i></i><span data-i18n="sec.placesKick">Paso 1</span></span><h2 class="disp rv" data-i18n="sec.placesH">¿A dónde <span class="serif">ir?</span></h2></div>
     <p class="rv" data-i18n="sec.placesP">Toca una tarjeta para ver cómo llegar, cuánto tiempo necesitas y consejos. El clima es en vivo.</p>
   </div>
   <div class="tools last rv">
@@ -103,7 +129,7 @@
 <!-- COMER -->
 <section class="wrap sec" id="comer">
   <div class="sec-head">
-    <div><span class="kick rv"><i></i><span data-i18n="sec.eatKick">Paso 2</span></span><h2 class="syne rv" data-i18n="sec.eatH">¿Dónde <span class="serif">comer?</span></h2></div>
+    <div><span class="kick rv"><i></i><span data-i18n="sec.eatKick">Paso 2</span></span><h2 class="disp rv" data-i18n="sec.eatH">¿Dónde <span class="serif">comer?</span></h2></div>
     <p class="rv" data-i18n="sec.eatP">Restaurantes y cafés reales en cada pueblo, con su especialidad. Se acomodan solos en el día y la hora que tiene sentido.</p>
   </div>
   <div class="tools rv"><span class="flabel" data-i18n="f.town">Pueblo</span><div class="filters" id="fFoodTown"></div></div>
@@ -115,7 +141,7 @@
 <!-- DORMIR -->
 <section class="wrap sec" id="dormir">
   <div class="sec-head">
-    <div><span class="kick rv"><i></i><span data-i18n="sec.sleepKick">Paso 3</span></span><h2 class="syne rv" data-i18n="sec.sleepH">¿Dónde <span class="serif">dormir?</span></h2></div>
+    <div><span class="kick rv"><i></i><span data-i18n="sec.sleepKick">Paso 3</span></span><h2 class="disp rv" data-i18n="sec.sleepH">¿Dónde <span class="serif">dormir?</span></h2></div>
     <p class="rv" data-i18n="sec.sleepP">Hoteles, hostales, fincas cafeteras y glamping en cada pueblo. Elige uno por noche y tu tour empieza cada mañana desde allí.</p>
   </div>
   <div class="tools rv"><span class="flabel" data-i18n="f.town">Pueblo</span><div class="filters" id="fStayTown"></div></div>
@@ -125,30 +151,42 @@
 </section>
 
 <!-- PUEBLOS -->
-<section class="wrap sec" id="pueblos">
+<section class="sec" id="pueblos"><div class="wrap">
   <div class="sec-head">
-    <div><span class="kick rv"><i></i><span data-i18n="sec.townsKick">La guía completa</span></span><h2 class="syne rv" data-i18n="sec.townsH">Pueblo por <span class="serif">pueblo</span></h2></div>
+    <div><span class="kick rv"><i></i><span data-i18n="sec.townsKick">La guía completa</span></span><h2 class="disp rv" data-i18n="sec.townsH">Pueblo por <span class="serif">pueblo</span></h2></div>
     <p class="rv" data-i18n="sec.townsP">Qué hacer, dónde comer y dónde quedarse en cada municipio, con cómo llegar desde Armenia.</p>
   </div>
+  <div class="t-tabs" id="townTabs" role="tablist" data-i18n-aria="town.tabs" aria-label="Elige un pueblo"></div>
   <div class="towns" id="towns"></div>
+</div></section>
+
+<!-- POSTALES -->
+<section class="sec" id="postales">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="kick rv"><i></i><span data-i18n="sec.galKick">Así se ve</span></span><h2 class="disp rv" data-i18n="sec.galH">Postales del <span class="serif">Quindío</span></h2></div>
+      <p class="rv" data-i18n="sec.galP">Palmas de cera, balcones de colores, cafetales y atardeceres.</p>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </div>
 </section>
 
 <!-- CUÁNDO IR -->
 <section class="wrap sec" id="cuando">
   <div class="sec-head">
-    <div><span class="kick rv"><i></i><span data-i18n="sec.whenKick">Planea la fecha</span></span><h2 class="syne rv" data-i18n="sec.whenH">¿Cuándo <span class="serif">ir?</span></h2></div>
+    <div><span class="kick rv"><i></i><span data-i18n="sec.whenKick">Planea la fecha</span></span><h2 class="disp rv" data-i18n="sec.whenH">¿Cuándo <span class="serif">ir?</span></h2></div>
     <p class="rv" data-i18n="sec.whenP">El Quindío tiene clima templado todo el año, con dos temporadas de lluvia. Aquí ves el año mes a mes y las fiestas que vale la pena conocer.</p>
   </div>
   <div class="months rv" id="months"></div>
-  <div class="wlegend rv"><span><i style="background:#FCEBC0"></i><span data-i18n="w.legendS">Más seco</span></span><span><i style="background:var(--mint)"></i><span data-i18n="w.legendT">Cambio de temporada</span></span><span><i style="background:#D6E4F2"></i><span data-i18n="w.legendL">Más lluvioso</span></span><span data-i18n="w.legendA">Temporada alta: más turistas, reserva antes</span></div>
-  <h3 class="syne rv" style="font-size:30px;margin-bottom:16px" data-i18n="sec.eventsH">Fiestas y eventos</h3>
+  <div class="wlegend rv"><span><i class="ws"></i><span data-i18n="w.legendS">Más seco</span></span><span><i class="wt"></i><span data-i18n="w.legendT">Cambio de temporada</span></span><span><i class="wl"></i><span data-i18n="w.legendL">Más lluvioso</span></span><span data-i18n="w.legendA">Temporada alta: más turistas, reserva antes</span></div>
+  <h3 class="disp sub-h rv" data-i18n="sec.eventsH">Fiestas y eventos</h3>
   <div class="events rv" id="events"></div>
 </section>
 
 <!-- CÓMO MOVERSE -->
 <section class="wrap sec" id="moverse">
   <div class="sec-head">
-    <div><span class="kick rv"><i></i><span data-i18n="sec.moveKick">Transporte</span></span><h2 class="syne rv" data-i18n="sec.moveH">Cómo <span class="serif">moverse</span></h2></div>
+    <div><span class="kick rv"><i></i><span data-i18n="sec.moveKick">Transporte</span></span><h2 class="disp rv" data-i18n="sec.moveH">Cómo <span class="serif">moverse</span></h2></div>
     <p class="rv" data-i18n="sec.moveP">Casi todo sale del Terminal de Transportes de Armenia. Estas son tarifas aproximadas de 2026 para que planees tu presupuesto.</p>
   </div>
   <div class="move-grid rv">
@@ -167,7 +205,7 @@
 <section class="builder" id="mi-tour">
   <div class="wrap">
     <div class="sec-head">
-      <div><span class="kick"><i></i><span data-i18n="sec.tourKick">Paso 4</span></span><h2 class="syne" data-i18n="sec.tourH">Tu <span class="serif">tour</span></h2></div>
+      <div><span class="kick"><i></i><span data-i18n="sec.tourKick">Paso 4</span></span><h2 class="disp" data-i18n="sec.tourH">Tu <span class="serif">tour</span></h2></div>
       <p data-i18n="sec.tourP">Ajusta los datos del viaje, reordena las paradas, elige hospedaje por noche, mira tu ruta en el mapa y descarga o comparte tu guía.</p>
     </div>
     <div class="b-grid">
@@ -193,11 +231,14 @@
             <button type="button" class="btn lite sm" id="btnCopy" data-i18n="btn.copy">Copiar</button>
             <button type="button" class="btn lite sm" id="btnPrint" data-i18n="btn.print">Imprimir</button>
           </div>
-          <button type="button" class="btn sm" id="btnClear" style="background:transparent;border:1.5px solid rgba(245,241,230,.25)" data-i18n="btn.clear">Vaciar tour</button>
+          <button type="button" class="btn sm outline" id="btnClear" data-i18n="btn.clear">Vaciar tour</button>
           <p class="hint" data-i18n="set.hint">Tu tour se guarda en este navegador. Con el enlace para compartir, otra persona abre el mismo tour en su celular.</p>
         </div>
       </div>
-      <div class="days" id="days"></div>
+      <div class="tour-col">
+        <div class="mapcard" id="tourMapCard" hidden><div class="mc-h"><h4 data-i18n="map.title">Mapa de tu recorrido</h4><span data-i18n="map.hint"></span></div><div id="tourMap" role="img" data-i18n-aria="map.title" aria-label="Mapa de tu recorrido"></div><div class="legend" id="mapLegend"></div></div>
+        <div class="days" id="days"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -205,7 +246,7 @@
 
 <footer>
   <div class="wrap">
-    <div class="f-big" data-i18n="foot.big">Buen <span class="serif">viaje.</span></div>
+    <div class="f-big disp" data-i18n="foot.big">Buen <span class="serif">viaje.</span></div>
     <div class="f-row">
       <span data-i18n="foot.brand">Ruta Verde · Guía gratuita del Eje Cafetero</span>
       <span data-i18n="foot.climate">Clima: Open-Meteo · Mapa: OpenStreetMap · Emergencias: 123</span>
@@ -221,6 +262,12 @@
 <div class="mbar" id="mbar"><span><b id="mCount">0</b> <span data-i18n="mbar.stops">elementos en tu tour</span></span><a class="btn lime sm" href="#mi-tour" data-i18n="mbar.see">Ver mi tour</a></div>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Detalle"></aside>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto" hidden>
+  <button type="button" class="lb-close" id="lbClose" data-i18n-aria="gal.close" aria-label="Cerrar foto"></button>
+  <button type="button" class="lb-nav prev" id="lbPrev" data-i18n-aria="gal.prev" aria-label="Foto anterior"></button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button type="button" class="lb-nav next" id="lbNext" data-i18n-aria="gal.next" aria-label="Foto siguiente"></button>
+</div>
 <div id="printArea"></div>
 <script src="data.js"></script>
 <script src="data2.js"></script>

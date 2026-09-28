@@ -2,17 +2,20 @@
 
 Guía turística **gratuita** del Eje Cafetero (Quindío, Colombia). Eliges los lugares que quieres ver, dónde comer y dónde dormir, y la página arma tu recorrido por días, con horarios, mapa y cómo llegar. Al final te llevas la guía en PDF o la compartes con un enlace.
 
-Funciona en español e inglés.
+Funciona en español e inglés. El diseño es oscuro y cinematográfico: fotos a pantalla completa, degradado de atardecer y títulos grandes.
 
 ## Qué tiene la página
 
+- **Portada animada**: al bajar, la palabra QUINDÍO crece y se desvanece y se abre la foto del Valle del Cocora.
+- **El mapa**: los 12 pueblos y todos los lugares en un mapa oscuro. Tocas un pueblo para ver su guía o un lugar para agregarlo a tu tour.
 - **Tours sugeridos**: un clic carga un tour completo (lugares, restaurantes y hospedaje por noche) que luego puedes cambiar.
 - **Lugares**: tarjetas con cómo llegar, cuánto tiempo necesitas, consejos y el **clima en vivo**.
 - **Dónde comer** y **dónde dormir**: restaurantes y hospedajes reales del Quindío. No hay precios, solo recomendaciones.
-- **Pueblo por pueblo**: 12 pueblos: Armenia, Circasia, Filandia, Salento, Montenegro, Quimbaya, Buenavista, Calarcá, Pijao, Génova, Córdoba y La Tebaida.
+- **Pueblo por pueblo**: pestañas con una foto grande por pueblo. Son 12: Armenia, Circasia, Filandia, Salento, Montenegro, Quimbaya, Buenavista, Calarcá, Pijao, Génova, Córdoba y La Tebaida.
+- **Postales**: galería de fotos que se abren en grande.
 - **Cuándo ir**: calendario de temporadas y fiestas.
 - **Cómo moverse**: rutas y tarifas de transporte entre pueblos.
-- **Tu tour**: el recorrido organizado por días, con un mapa de cada día.
+- **Tu tour**: el recorrido organizado por días, con un mapa que numera las paradas en orden, marca dónde duermes cada noche y deja ver un día a la vez.
 - **Llevarte la guía**: copiar el texto, imprimir, descargar en PDF o compartir un enlace que abre el mismo tour en otro celular.
 
 Tu tour se guarda en el navegador: si cierras la página y vuelves, sigue ahí.
@@ -42,7 +45,7 @@ Para verla en inglés: http://localhost:8000/?lang=en
 | `i18n.js` | Textos de botones y títulos en español e inglés. |
 | `en.js`, `en2.js` | Traducción al inglés del contenido de `data.js` y `data2.js`. |
 | `core.js` | El núcleo: idioma, fotos, guardado del tour, enlace para compartir, rutas y horarios. |
-| `ui.js` | Lo que se ve en pantalla: tarjetas, filtros, armado del tour, mapa y clima. |
+| `ui.js` | Lo que se ve en pantalla: portada animada, tarjetas, filtros, pueblos, postales, armado del tour, los dos mapas y el clima. |
 | `pdf.js` | Copiar, imprimir y descargar el tour en PDF. |
 | `img/` | Fotos. Cada una viene en dos tamaños: `-s` (pequeña) y `-l` (grande). |
 | `robots.txt` | Permite que Google indexe la página. |
@@ -66,7 +69,8 @@ La página son archivos sueltos: no necesita servidor ni base de datos. Se puede
 La página usa estos servicios gratuitos. Todos cargan solo cuando se necesitan:
 
 - [Open-Meteo](https://open-meteo.com/): clima en vivo de cada lugar.
-- [Leaflet](https://leafletjs.com/) con mapas de OpenStreetMap: el mapa de cada día.
+- [Leaflet](https://leafletjs.com/) con mapas de OpenStreetMap, oscurecidos con CSS: el mapa de la región y el de tu tour.
+- [Google Fonts](https://fonts.google.com/): letras Anton y Figtree.
 - [jsPDF](https://github.com/parallax/jsPDF): crear el PDF.
 
 Si no hay internet, la guía sigue funcionando, pero sin clima, mapa ni PDF.

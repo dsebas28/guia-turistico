@@ -25,6 +25,7 @@
     '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg>',
     '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a5 5 0 0 1 10 0v2M14 21v-1.5a3.5 3.5 0 0 1 7 0V21"/></svg>'
   ];
+  const PRESET_PH = ['salento3', 'buenavista2', 'parque'].map(k => PHOTOS[k] ? k : 'cocora');
   const zn = RV.zoneName, dur = RV.durTxt;
   const townObj = id => ({...TOWNS[id], id:'town-' + id});
 
@@ -82,34 +83,51 @@
     [['#fPlaces','place'],['#fFoodTown','foodTown'],['#fFoodSlot','foodSlot'],['#fStayTown','stayTown'],['#fStayFam','stayFam']].forEach(([sel,key]) => $$(sel + ' button').forEach(b => b.onclick = () => { F[key] = b.dataset.f; $$(sel + ' button').forEach(x => x.classList.toggle('on', x === b)); renderCards(); }));
   }
 
-  /* ================= GUÍA POR PUEBLO ================= */
+  /* ================= GUÍA POR PUEBLO (pestañas + escenario) ================= */
+  let curTown = RV.townIds[0];
   function renderTowns(){
-    $('#towns').innerHTML = RV.townIds.map(id => {
-      const tw = TOWNS[id], to = townObj(id);
-      const pl = PLACES.filter(p => tw.zones.includes(p.zone)), rs = FOOD.filter(r => tw.zones.includes(r.zone)), ss = STAYS.filter(s => tw.zones.includes(s.zone));
-      return `<article class="town rv in" id="pueblo-${id}">
-        <div class="t-art">${pic(tw.ph, true, PHOTOS[tw.ph].t)}<span class="t-name"><b>${tw.name}</b><span>${esc(L(to,'tag'))}</span></span></div>
+    $('#townTabs').innerHTML = RV.townIds.map(id => `<button type="button" class="t-tab" role="tab" id="tab-${id}" aria-controls="towns" aria-selected="${id === curTown}" tabindex="${id === curTown ? 0 : -1}" data-town="${id}">${pic(TOWNS[id].ph, false, '')}<span>${TOWNS[id].name}</span></button>`).join('');
+    const id = curTown, tw = TOWNS[id], to = townObj(id);
+    const pl = PLACES.filter(p => tw.zones.includes(p.zone)), rs = FOOD.filter(r => tw.zones.includes(r.zone)), ss = STAYS.filter(s => tw.zones.includes(s.zone));
+    $('#towns').setAttribute('role', 'tabpanel'); $('#towns').setAttribute('aria-labelledby', 'tab-' + id);
+    $('#towns').innerHTML = `<article class="town" id="pueblo-${id}">
+        <div class="t-art">${pic(tw.ph, true, PHOTOS[tw.ph].t, true)}<span class="t-name"><b>${tw.name}</b><span>${esc(L(to,'tag'))}</span></span></div>
         <div class="t-body"><p>${esc(L(to,'intro'))}</p>
-          <div class="t-block"><h5>${t('town.todo')}</h5><ul class="acts-l">${L(to,'acts').map(([n,d]) => `<li><i></i><span><b>${esc(n)}.</b> ${esc(d)}</span></li>`).join('')}</ul></div>
+          <div class="t-col"><div class="t-block"><h5>${t('town.todo')}</h5><ul class="acts-l">${L(to,'acts').map(([n,d]) => `<li><i></i><span><b>${esc(n)}.</b> ${esc(d)}</span></li>`).join('')}</ul></div>
+            <div class="t-block"><h5>${t('town.how')}</h5><p class="t-how">${esc(L(to,'how'))}</p></div></div>
+          <div class="t-col">
           ${pl.length ? `<div class="t-block"><h5>${t('town.add')}</h5><div class="chips">${pl.map(p => `<button type="button" class="chip" data-open="${p.id}">${ICON.pin}${esc(p.name)}</button>`).join('')}</div></div>` : ''}
           ${rs.length ? `<div class="t-block"><h5>${t('town.eat')}</h5><div class="chips">${rs.map(r => `<button type="button" class="chip" data-open="${r.id}">${esc(r.name)} <small>${RV.slot(r.slot)}</small></button>`).join('')}</div></div>` : ''}
           ${ss.length ? `<div class="t-block"><h5>${t('town.sleep')}</h5><div class="chips">${ss.map(s => `<button type="button" class="chip" data-open="${s.id}">${esc(s.name)} <small>${RV.type(s.type)}</small></button>`).join('')}</div></div>` : ''}
-          <div class="t-block"><h5>${t('town.how')}</h5><p class="t-how">${esc(L(to,'how'))}</p></div>
+          </div>
         </div></article>`;
-    }).join('');
   }
+  function showTown(id, scroll){
+    if (!TOWNS[id]) return;
+    curTown = id; renderTowns(); RV.markTown && RV.markTown(id);
+    const tab = $('#tab-' + id); if (tab) tab.scrollIntoView({block:'nearest', inline:'center', behavior: RV.reduce ? 'auto' : 'smooth'});
+    if (scroll) goTo('#pueblos');
+  }
+  RV.showTown = showTown;
+  $('#townTabs').addEventListener('keydown', e => {
+    if (!['ArrowRight','ArrowLeft','Home','End'].includes(e.key)) return;
+    e.preventDefault();
+    const ids = RV.townIds, i = ids.indexOf(curTown);
+    const j = e.key === 'Home' ? 0 : e.key === 'End' ? ids.length - 1 : (i + (e.key === 'ArrowRight' ? 1 : -1) + ids.length) % ids.length;
+    showTown(ids[j]); $('#tab-' + ids[j]).focus();
+  });
 
   /* ================= CUÁNDO IR Y CÓMO MOVERSE ================= */
   function renderSeasons(){
     const months = t('months').split(',');
     $('#months').innerHTML = SEASON.map((m,i) => `<div class="mo ${m.w}"><b>${months[i]}</b><span>${t('w.' + m.w)}</span>${m.a ? `<i>${t('w.busy')}</i>` : ''}</div>`).join('');
-    $('#events').innerHTML = EVENTS.map((e,i) => { const eo = {...e, id:'ev' + i}; return `<div class="ev"><span class="ev-when">${esc(L(eo,'when'))}</span><b>${esc(L(eo,'name'))}</b><p>${esc(L(eo,'desc'))}</p><button type="button" class="chip" data-goto="pueblo-${e.town}">${ICON.pin}${TOWNS[e.town].name}</button></div>`; }).join('');
+    $('#events').innerHTML = EVENTS.map((e,i) => { const eo = {...e, id:'ev' + i}; return `<div class="ev"><span class="ev-when">${esc(L(eo,'when'))}</span><b>${esc(L(eo,'name'))}</b><p>${esc(L(eo,'desc'))}</p><button type="button" class="chip" data-town="${e.town}" data-scroll="1">${ICON.pin}${TOWNS[e.town].name}</button></div>`; }).join('');
     $('#fares').innerHTML = `<table class="fares"><thead><tr><th>${t('fare.route')}</th><th>${t('fare.how')}</th><th>${t('fare.time')}</th><th>${t('fare.price')}</th></tr></thead><tbody>${FARES.map((f,i) => { const fo = {...f, id:'fare' + i}; return `<tr><td><b>${esc(L(fo,'route'))}</b></td><td>${esc(L(fo,'how'))}</td><td>${esc(L(fo,'time'))}</td><td>${esc(L(fo,'price'))}</td></tr>`; }).join('')}</tbody></table>`;
   }
 
   /* ================= PRESETS ================= */
   function renderPresets(){
-    $('#presets').innerHTML = PRESETS.map((p,i) => { const po = {...p, id:'preset' + i}; return `<button type="button" class="preset rv in" data-preset="${i}"><span class="bgc"></span><span class="ic">${PRESET_ICONS[i] || PRESET_ICONS[0]}</span><h3>${esc(L(po,'name'))}</h3><p>${esc(L(po,'desc'))}</p><span class="go">${t('preset.load', {n:p.days})} ${ICON.arr}</span></button>`; }).join('');
+    $('#presets').innerHTML = PRESETS.map((p,i) => { const po = {...p, id:'preset' + i}; return `<button type="button" class="preset rv in" data-preset="${i}"><span class="bgc">${pic(PRESET_PH[i] || 'cocora', true, '')}</span><span class="ic">${PRESET_ICONS[i] || PRESET_ICONS[0]}</span><span class="days-n">${p.days} ${t(p.days === 1 ? 'day' : 'stat.days').toLowerCase()}</span><h3>${esc(L(po,'name'))}</h3><p>${esc(L(po,'desc'))}</p><span class="go">${t('preset.load', {n:p.days})} ${ICON.arr}</span></button>`; }).join('');
     $$('[data-preset]').forEach(b => b.onclick = () => {
       const p = PRESETS[+b.dataset.preset];
       if (!RV.isEmpty() && !confirm(t('confirm.replace'))) return;
@@ -171,11 +189,12 @@
     ['btnPdf','btnCopy','btnPrint','btnAuto','btnClear','btnShare'].forEach(id => $('#'+id).disabled = !(n + nn));
     if (!n && !nn){
       $('#days').innerHTML = `<div class="no-tour"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#86B86B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><b style="font-size:20px">${t('tour.empty')}</b><span>${t('tour.emptyHint')}</span><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a class="btn lime sm" href="#lugares">${t('tour.pickPlaces')}</a><a class="btn lite sm" href="#sugeridos">${t('nav.presets')}</a></div></div>`;
-      if (RV.map){ RV.map.remove(); RV.map = null; }
+      $('#tourMapCard').hidden = true;
       return;
     }
+    $('#tourMapCard').hidden = false;
     const opts = i => state.days.map((_,k) => `<option value="${k}" ${k===i?'selected':''}>${t('day')} ${k+1}</option>`).join('');
-    $('#days').innerHTML = `<div class="mapcard"><div class="mc-h"><h4>${t('map.title')}</h4><span>${t('map.hint')}</span></div><div id="tourMap" role="img" aria-label="${esc(t('map.title'))}"></div><div class="legend" id="mapLegend"></div></div>` + state.days.map((d,i) => {
+    $('#days').innerHTML = state.days.map((d,i) => {
       const sch = RV.schedule(i), end = sch.length ? sch[sch.length-1].end : 0, full = end > 1260;
       return `<div class="day" style="animation-delay:${i*.06}s"><div class="day-h"><span class="n" style="background:${DAYC[i % DAYC.length]}">${i+1}</span><div><h4>${t('day')} ${i+1}</h4><small>${RV.dayDate(i) || t('day.noDate')}</small></div><span class="load ${full?'full':''}">${sch.length ? (full ? t('day.full') : t('day.ends', {h:RV.fmtT(end)})) : t('day.free')}</span></div>
         <div class="from">${t('day.from', {town:zn(RV.startZone(i))})}${i > 0 && state.days[i-1].stay ? ' · ' + t('day.slept', {name:esc(ALL[state.days[i-1].stay].name)}) : ''}</div>
@@ -193,45 +212,164 @@
     $$('[data-mv]').forEach(s => s.onchange = () => moveDay(s.dataset.mv, +s.value));
     $$('[data-stay]').forEach(s => s.onchange = () => { state.days[+s.dataset.stay].stay = s.value || null; RV.toast(s.value ? t('toast.night', {name:ALL[s.value].name, n:+s.dataset.stay+1}) : t('toast.stayRemoved')); commit(); });
     drawMap();
+    RV.refreshRegion && RV.refreshRegion();
   }
 
-  /* ================= MAPA DEL TOUR (Leaflet + OpenStreetMap) ================= */
-  const DAYC = ['#2D5A3E','#D9744A','#2B5BA8','#B8860B','#8E3E8E','#1F7A7A','#A2482A'];
+  /* ================= MAPAS (Leaflet + OpenStreetMap en modo oscuro) ================= */
+  const DAYC = ['#FF4D8D','#FFB020','#35E0B0','#A45CFF','#4DA3FF','#FF7A45','#E5E058'];
   let leaflet = null;
   function loadLeaflet(){
     if (leaflet) return leaflet;
-    leaflet = new Promise((ok, no) => {
-      const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css'; document.head.appendChild(css);
-      const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js'; s.onload = () => window.L ? ok() : no(); s.onerror = no; document.head.appendChild(s);
-    });
+    const get = (tag, attrs) => new Promise((ok, no) => { const el = document.createElement(tag); Object.assign(el, attrs); el.onload = ok; el.onerror = no; document.head.appendChild(el); });
+    /* esperamos también la hoja de estilos: sin ella las teselas salen desordenadas */
+    leaflet = Promise.all([
+      get('link', {rel:'stylesheet', href:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css'}),
+      get('script', {src:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js'})
+    ]).then(() => { if (!window.L) throw new Error('leaflet'); });
+    leaflet.catch(() => { leaflet = null; });
     return leaflet;
   }
+  RV.loadLeaflet = loadLeaflet;
+  /* OpenStreetMap, oscurecido con un filtro de CSS (clase .dark-tiles en styles.css) */
+  RV.tiles = Lf => Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:18, className:'dark-tiles', attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'});
+  /* curva suave entre dos puntos, para que las rutas no se monten una sobre otra */
+  function arc(a, b, bend){
+    const [y1,x1] = a, [y2,x2] = b, mx = (x1+x2)/2, my = (y1+y2)/2, dx = x2-x1, dy = y2-y1;
+    const cx = mx - dy * bend, cy = my + dx * bend, out = [];
+    for (let k = 0; k <= 16; k++){ const u = k/16, v = 1-u; out.push([v*v*y1 + 2*v*u*cy + u*u*y2, v*v*x1 + 2*v*u*cx + u*u*x2]); }
+    return out;
+  }
+  let tmap = null, tlayer = null, dayFocus = -1;
   function drawMap(){
     const box = $('#tourMap'); if (!box) return;
     loadLeaflet().then(() => {
-      if (!document.contains(box)) return;
-      if (RV.map){ RV.map.remove(); RV.map = null; }
-      const Lf = window.L, map = RV.map = Lf.map(box, {scrollWheelZoom:false, zoomControl:true, attributionControl:true});
-      Lf.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:17, subdomains:'abc', attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(map);
-      const pts = [], jitter = (z, n) => { const [a,b] = ZLL[z]; return [a + (n % 3) * .0035, b + Math.floor(n / 3) * .0035]; };
+      const Lf = window.L;
+      if (!tmap){
+        box.innerHTML = '';
+        tmap = RV.map = Lf.map(box, {scrollWheelZoom:false, zoomControl:true, attributionControl:true, zoomSnap:.25});
+        /* con el mapa muy alejado los nombres se montan: se ocultan */
+        tmap.on('zoomend', () => box.classList.toggle('nolabels', tmap.getZoom() < (box.clientWidth > 600 ? 9.75 : 10.75)));
+        RV.tiles(Lf).addTo(tmap);
+        tlayer = Lf.layerGroup().addTo(tmap);
+        new ResizeObserver(() => tmap.invalidateSize()).observe(box);
+      }
+      if (dayFocus >= state.days.length) dayFocus = -1;
+      tlayer.clearLayers();
+      const pts = [], dayPts = [];
       state.days.forEach((d,i) => {
-        const col = DAYC[i % DAYC.length], seen = {}, line = [ZLL[RV.startZone(i)]];
-        d.stops.forEach(id => { const z = ALL[id].zone; (seen[z] = seen[z] || []).push(id); if (line[line.length-1] !== ZLL[z]) line.push(ZLL[z]); });
-        if (d.stay) line.push(ZLL[ALL[d.stay].zone]);
-        Lf.polyline(line, {color:col, weight:4, opacity:.75, dashArray: '8 7'}).addTo(map);
-        Object.keys(seen).forEach(z => {
-          const ll = jitter(z, i); pts.push(ll);
-          Lf.circleMarker(ll, {radius:10, color:'#fff', weight:2.5, fillColor:col, fillOpacity:1}).addTo(map)
-            .bindPopup(`<b>${t('day')} ${i+1} · ${zn(z)}</b><br>${seen[z].map(id => esc(ALL[id].name)).join('<br>')}`);
+        const col = DAYC[i % DAYC.length], on = dayFocus < 0 || dayFocus === i, op = on ? 1 : .18;
+        /* paradas en orden; paradas seguidas en el mismo pueblo comparten punto */
+        const groups = [];
+        d.stops.forEach((id, j) => { const z = ALL[id].zone, g = groups[groups.length-1]; if (g && g.z === z) g.items.push([j+1, id]); else groups.push({z, items:[[j+1, id]]}); });
+        const start = RV.startZone(i), path = [start, ...groups.map(g => g.z)];
+        if (d.stay) path.push(ALL[d.stay].zone);
+        const mine = [];
+        for (let k = 1; k < path.length; k++){
+          if (path[k] === path[k-1]) continue;
+          const seg = arc(ZLL[path[k-1]], ZLL[path[k]], .12 + i * .05);
+          if (on) Lf.polyline(seg, {color:col, weight:10, opacity:.18, interactive:false}).addTo(tlayer);
+          Lf.polyline(seg, {color:col, weight:3.5, opacity:op, dashArray: on ? null : '4 8', interactive:false}).addTo(tlayer);
+        }
+        /* punto de salida del día */
+        if (i === 0 || !state.days[i-1].stay){
+          Lf.marker(ZLL[start], {icon:Lf.divIcon({className:'', html:'<div class="spin"></div>', iconSize:[22,22], iconAnchor:[11,11]}), opacity:op, zIndexOffset:-100}).addTo(tlayer).bindPopup(`<b>${t('map.start')}</b><br>${t('day')} ${i+1} · ${zn(start)}`);
+          mine.push(ZLL[start]);
+        }
+        /* marcadores numerados, corridos un poco a un lado si otro día usa el mismo pueblo */
+        const seenZ = {};
+        groups.forEach(g => {
+          const ll = ZLL[g.z], nums = g.items.map(x => x[0]), label = nums.length > 2 ? `${nums[0]}–${nums[nums.length-1]}` : nums.join('·');
+          const shift = (seenZ[g.z] = (seenZ[g.z] || 0) + 1) - 1, dx = (i % 3 - 1) * 10 + shift * 8;
+          const html = `<div class="tpin"><span style="background:${col}"></span><b>${label}</b>${on ? `<em>${esc(zn(g.z))}</em>` : ''}</div>`;
+          Lf.marker(ll, {icon:Lf.divIcon({className:'', html, iconSize:[32,32], iconAnchor:[16 - dx, 38]}), opacity:op, zIndexOffset: on ? 500 + i : 0, riseOnHover:true}).addTo(tlayer)
+            .bindPopup(`<b>${t('day')} ${i+1} · ${esc(zn(g.z))}</b><br>${g.items.map(([n,id]) => `${n}. ${esc(ALL[id].name)}`).join('<br>')}`);
+          pts.push(ll); mine.push(ll);
         });
-        if (d.stay){ const s = ALL[d.stay], ll = ZLL[s.zone]; pts.push(ll);
-          Lf.marker(ll, {icon:Lf.divIcon({className:'bedpin', html:`<span style="background:${col}">${ICON.bed}</span>`, iconSize:[30,30], iconAnchor:[15,15]})}).addTo(map).bindPopup(`<b>${t('night.of', {n:i+1})}</b><br>${esc(s.name)} · ${zn(s.zone)}`); }
+        if (d.stay){ const s = ALL[d.stay], ll = ZLL[s.zone]; pts.push(ll); mine.push(ll);
+          Lf.marker(ll, {icon:Lf.divIcon({className:'bedpin', html:`<span style="background:${col}">${ICON.bed}</span>`, iconSize:[30,30], iconAnchor:[-14, 15 + (i % 3 - 1) * 14]}), opacity:op, zIndexOffset:400}).addTo(tlayer).bindPopup(`<b>${t('night.of', {n:i+1})}</b><br>${esc(s.name)} · ${zn(s.zone)}`); }
+        dayPts[i] = mine;
       });
-      if (!pts.length) pts.push(ZLL[state.base]);
-      map.fitBounds(Lf.latLngBounds(pts).pad(.25), {maxZoom:12});
-      $('#mapLegend').innerHTML = state.days.map((d,i) => `<span><i style="background:${DAYC[i % DAYC.length]}"></i>${t('day')} ${i+1}</span>`).join('') + `<span>${ICON.bed} ${t('map.night')}</span>`;
+      const focus = dayFocus >= 0 && dayPts[dayFocus] && dayPts[dayFocus].length ? dayPts[dayFocus] : pts.length ? pts : [ZLL[state.base]];
+      tmap.invalidateSize();
+      tmap.fitBounds(Lf.latLngBounds(focus), {padding:[48,48], maxZoom:12, animate:false});
+      box.classList.toggle('nolabels', tmap.getZoom() < (box.clientWidth > 600 ? 9.75 : 10.75));
+      $('#mapLegend').innerHTML = (state.days.length > 1 ? `<button type="button" data-dayf="-1" class="${dayFocus < 0 ? 'on' : ''}">${t('map.all')}</button>` : '') +
+        state.days.map((d,i) => `<button type="button" data-dayf="${i}" class="${dayFocus === i ? 'on' : ''}"><i style="background:${DAYC[i % DAYC.length]}"></i>${t('day')} ${i+1}</button>`).join('') +
+        `<span class="lg-note">${ICON.bed} ${t('map.night')}</span>`;
+      $$('[data-dayf]').forEach(b => b.onclick = () => { dayFocus = +b.dataset.dayf; drawMap(); });
+    }).catch(() => { box.innerHTML = `<p class="map-off">${t('map.offline')}</p>`; tmap = null; });
+  }
+
+  /* ================= MAPA DE LA REGIÓN ================= */
+  let rmap = null, rlayer = null, rtowns = {};
+  const REGION = [[4.19,-75.84],[4.70,-75.46]];
+  const FITPAD = () => innerWidth < 640 ? {paddingTopLeft:[70,10], paddingBottomRight:[60,110]} : {paddingTopLeft:[40,20], paddingBottomRight:[40,70]};
+  const LEFT = ['armenia','quimbaya','montenegro','tebaida','buenavista','genova']; /* nombre a la izquierda para que no se tapen */
+  function townLL(id){ const z = TOWNS[id].zones[0]; return id === 'montenegro' ? [4.566,-75.751] : ZLL[z]; }
+  function drawRegion(){
+    const box = $('#regionMap'); if (!box || rmap) return;
+    loadLeaflet().then(() => {
+      const Lf = window.L;
+      rmap = Lf.map(box, {scrollWheelZoom:false, zoomControl:true, minZoom:9, zoomSnap:.25, maxBounds:Lf.latLngBounds(REGION).pad(.6)});
+      RV.tiles(Lf).addTo(rmap);
+      rmap.fitBounds(REGION, FITPAD());
+      new ResizeObserver(() => rmap.invalidateSize()).observe(box);
+      rlayer = Lf.layerGroup().addTo(rmap);
+      refreshRegion(); RV.refreshRegion();
     }).catch(() => { box.innerHTML = `<p class="map-off">${t('map.offline')}</p>`; });
   }
+  function placePop(p){
+    const on = RV.inTour(p.id), k = RV.mainPh(p);
+    return `<div class="rpop">${pic(k, false, PHOTOS[k].t)}<small>${esc(zn(p.zone))}</small><b>${esc(p.name)}</b><span>${esc(L(p,'tag'))}</span>
+      <div class="row"><button type="button" class="btn ${on ? 'lime' : ''}" data-toggle="${p.id}">${on ? ICON.check + ' ' + t('btn.inTour') : ICON.plus + ' ' + t('btn.add')}</button><button type="button" class="btn ghost" data-open="${p.id}">${t('btn.view')}</button></div></div>`;
+  }
+  let rplaces = {};
+  function refreshRegion(){
+    if (!rmap) return;
+    const Lf = window.L; rmap.closePopup(); rlayer.clearLayers(); rtowns = {}; rplaces = {};
+    RV.townIds.forEach(id => {
+      const tw = TOWNS[id], to = townObj(id);
+      const m = Lf.marker(townLL(id), {icon:Lf.divIcon({className:'', html:`<div class="rtown ${LEFT.includes(id) ? 'l' : ''} ${id === curTown ? 'on' : ''}"><i></i><b>${tw.name}</b></div>`, iconSize:[0,0], iconAnchor:[0,0]}), zIndexOffset:1000, riseOnHover:true, keyboard:true, title:tw.name}).addTo(rlayer);
+      m.bindPopup(() => { const pl = ALL[id] && ALL[id].kind === 'lugar' ? ALL[id] : null, on = pl && RV.inTour(id);
+        return `<div class="rpop">${pic(tw.ph, false, PHOTOS[tw.ph].t)}<small>${t('nav.towns')}</small><b>${tw.name}</b><span>${esc(L(to,'tag'))}</span><div class="row"><button type="button" class="btn" data-town="${id}" data-scroll="1">${t('rmap.seeTown')}</button>${pl ? `<button type="button" class="btn ${on ? 'lime' : 'ghost'}" data-toggle="${id}">${on ? ICON.check : ICON.plus}</button>` : ''}</div></div>`; }, {minWidth:250, maxWidth:280});
+      rtowns[id] = m;
+    });
+    PLACES.forEach(p => {
+      if (RV.townIds.includes(p.id)) return; /* el pueblo ya tiene su marcador */
+      const m = Lf.marker([p.lat, p.lon], {icon:Lf.divIcon({className:'', html:`<div class="rplace ${RV.inTour(p.id) ? 'in' : ''}"></div>`, iconSize:[14,14], iconAnchor:[7,7]}), riseOnHover:true, title:p.name}).addTo(rlayer);
+      m.bindPopup(() => placePop(p), {minWidth:250, maxWidth:280});
+      rplaces[p.id] = m;
+    });
+  }
+  /* al agregar o quitar algo: solo cambia el color de los marcadores y el botón del globo abierto */
+  RV.refreshRegion = () => {
+    if (!rmap) return;
+    Object.keys(rplaces).forEach(id => { const el = rplaces[id].getElement(); if (el) el.firstElementChild.classList.toggle('in', RV.inTour(id)); });
+    Object.keys(rtowns).forEach(id => { const el = rtowns[id].getElement(); if (el && ALL[id]) el.firstElementChild.classList.toggle('in', RV.inTour(id)); });
+    const pop = rmap._popup; if (pop && rmap.hasLayer(pop)) pop.update();
+  };
+  RV.markTown = id => { $$('.rtown').forEach(el => el.classList.remove('on')); const m = rtowns[id]; if (m && m.getElement()) m.getElement().querySelector('.rtown').classList.add('on'); };
+  $('#rmReset').onclick = () => { if (rmap){ rmap.closePopup(); rmap.flyToBounds(REGION, {...FITPAD(), duration: RV.reduce ? 0 : .8}); } };
+  new IntersectionObserver((es, ob) => es.forEach(e => { if (e.isIntersecting){ drawRegion(); ob.disconnect(); } }), {rootMargin:'400px'}).observe($('#regionMap'));
+
+  /* ================= POSTALES ================= */
+  const GAL = [['cocora2','w h'],['salento3',''],['filandia7',''],['cafetal2','h'],['pijao3',''],['buenavista2','w'],['cocora7',''],['filandia9',''],['palmsSign','h'],['salento5',''],['cafeGranos',''],['calarcaVista','w'],['tebaida2',''],['filandia5','']].filter(([k]) => PHOTOS[k]);
+  let gi = 0;
+  function renderGallery(){
+    $('#gallery').innerHTML = GAL.map(([k,c], i) => `<button type="button" class="${c}" data-gal="${i}" data-cap="${esc(PHOTOS[k].t)}" aria-label="${esc(PHOTOS[k].t)}">${pic(k, c.includes('w') || c.includes('h'), PHOTOS[k].t)}</button>`).join('');
+  }
+  function showPhoto(i){
+    gi = (i + GAL.length) % GAL.length; const k = GAL[gi][0];
+    $('#lbImg').src = RV.pSrc(k, true); $('#lbImg').dataset.k = k; $('#lbImg').dataset.w = 1600; delete $('#lbImg').dataset.fb; $('#lbImg').alt = PHOTOS[k].t;
+    $('#lbCap').innerHTML = `<b>${esc(PHOTOS[k].t)}</b>${RV.credit(k)}`;
+  }
+  let lbFocus = null;
+  function openLb(i){ lbFocus = document.activeElement; showPhoto(i); $('#lightbox').hidden = false; document.body.style.overflow = 'hidden'; $('#lbClose').focus(); }
+  function closeLb(){ $('#lightbox').hidden = true; document.body.style.overflow = ''; if (lbFocus) lbFocus.focus({preventScroll:true}); }
+  $('#gallery').addEventListener('click', e => { const b = e.target.closest('[data-gal]'); if (b) openLb(+b.dataset.gal); });
+  $('#lbClose').onclick = closeLb; $('#lbPrev').onclick = () => showPhoto(gi - 1); $('#lbNext').onclick = () => showPhoto(gi + 1);
+  $('#lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') closeLb(); });
+  addEventListener('keydown', e => { if ($('#lightbox').hidden) return; if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowRight') showPhoto(gi + 1); if (e.key === 'ArrowLeft') showPhoto(gi - 1); });
 
   /* ================= DRAWER ================= */
   let lastFocus = null;
@@ -278,7 +416,7 @@
   addEventListener('keydown', e => { if (e.key === 'Escape'){ if ($('#drawer').classList.contains('open')) closeDrawer(); closeMenu(); } });
 
   /* ================= NAVEGACIÓN Y MENÚ ================= */
-  function goTo(sel){ const el = typeof sel === 'string' ? $(sel) : sel; if (!el) return; scrollTo({top: el.getBoundingClientRect().top + scrollY - 80, behavior: RV.reduce ? 'auto' : 'smooth'}); }
+  function goTo(sel){ const el = typeof sel === 'string' ? $(sel) : sel; if (!el) return; const top = el.id === 'inicio' ? 0 : el.getBoundingClientRect().top + scrollY - 70; scrollTo({top, behavior: RV.reduce ? 'auto' : 'smooth'}); }
   RV.goTo = goTo;
   const closeMenu = () => { $('.nav').classList.remove('open'); $('#menuBtn').setAttribute('aria-expanded', 'false'); };
   $('#menuBtn').onclick = () => { const o = $('.nav').classList.toggle('open'); $('#menuBtn').setAttribute('aria-expanded', o); };
@@ -286,6 +424,7 @@
     const tg = e.target.closest('[data-toggle]'); if (tg){ toggle(tg.dataset.toggle); return; }
     const o = e.target.closest('[data-open]'); if (o){ openDrawer(o.dataset.open); return; }
     const g = e.target.closest('[data-goto]'); if (g){ goTo('#' + g.dataset.goto); return; }
+    const tw = e.target.closest('[data-town]'); if (tw){ if (rmap) rmap.closePopup(); showTown(tw.dataset.town, !!tw.dataset.scroll); return; }
     const a = e.target.closest('a[href^="#"]'); if (a && a.id !== 'dGo'){ const tgt = $(a.getAttribute('href')); if (tgt){ e.preventDefault(); if ($('#drawer').classList.contains('open')) closeDrawer(); closeMenu(); goTo(tgt); } return; }
     if (!e.target.closest('.nav')) closeMenu();
   });
@@ -312,7 +451,7 @@
 
   /* ================= IDIOMA ================= */
   $('#langBtn').onclick = () => { RV.lang = RV.lang === 'en' ? 'es' : 'en'; RV.store.set('rv-lang', RV.lang); renderAll(); RV.toast(t('toast.lang')); };
-  function renderAll(){ applyStatic(); renderFilters(); renderPresets(); renderTowns(); renderSeasons(); renderCards(); renderTour(); renderCredits(); heroCredit(); }
+  function renderAll(){ applyStatic(); renderFilters(); renderPresets(); renderTowns(); renderSeasons(); renderCards(); renderTour(); renderCredits(); heroCredit(); renderGallery(); refreshRegion(); RV.refreshRegion(); }
   RV.renderAll = renderAll;
 
   function renderCredits(){
@@ -323,6 +462,26 @@
 
   /* ================= INICIO ================= */
   const hero = $('#heroPh'); hero.dataset.k = 'heroCocora'; hero.dataset.w = 1920; hero.src = RV.pSrc('heroCocora', true);
+  /* al bajar: la palabra QUINDÍO crece y se desvanece, la foto se abre y aparece el texto */
+  const stage = $('.hero-stage'), heroSec = $('.hero'), nav = $('.nav');
+  const clamp01 = v => Math.max(0, Math.min(1, v));
+  let ticking = false;
+  function onScroll(){
+    ticking = false;
+    const run = heroSec.offsetHeight - innerHeight, p = run > 0 ? clamp01(scrollY / run) : 1;
+    if (!RV.reduce){
+      stage.style.setProperty('--p1', clamp01(p / .7).toFixed(3));
+      stage.style.setProperty('--p2', clamp01(p / .45).toFixed(3));
+      const p3 = clamp01((p - .38) / .32);
+      stage.style.setProperty('--p3', p3.toFixed(3));
+      stage.classList.toggle('copy-on', p3 > .6);
+    }
+    nav.classList.toggle('solid', scrollY > innerHeight * .5);
+  }
+  addEventListener('scroll', () => { if (!ticking){ ticking = true; requestAnimationFrame(onScroll); } }, {passive:true});
+  addEventListener('resize', onScroll);
+  if (RV.reduce) stage.classList.add('copy-on');
+  onScroll();
   const shared = RV.readShared();
   if (shared){
     if (RV.isEmpty() || confirm(t('share.replace'))){ Object.assign(state, shared); RV.save(); $('#tName').value = state.name; $('#tDate').value = state.date; $('#tPeople').textContent = state.people; $('#tDays').value = state.days.length; setTimeout(() => { RV.toast(t('toast.sharedLoaded')); goTo('#mi-tour'); }, 400); }

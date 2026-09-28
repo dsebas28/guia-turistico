@@ -155,7 +155,7 @@ const PLACES = [
     how:'Es el punto de partida del viaje. Dentro de la ciudad muévete en taxi, app o bus urbano.',
     tips:'Revisa los horarios del Museo del Oro Quimbaya antes de ir. El Parque de la Vida es ideal para caminar en la tarde.',
     todo:['Museo del Oro Quimbaya','Parque de la Vida','Plaza de Bolívar','Parque Sucre']},
-  {id:'parque', name:'Parque del Café', zone:'parque', town:'Montenegro', cat:['familia'], dur:420, lat:4.566, lon:-75.751, typ:22, code:1, alt:'1.300 m aprox.', ph:['parque','parque2','parque3','casaTipica'],
+  {id:'parque', name:'Parque del Café', zone:'parque', town:'Montenegro', cat:['familia'], dur:420, lat:4.540, lon:-75.771, typ:22, code:1, alt:'1.300 m aprox.', ph:['parque','parque2','parque3','casaTipica'],
     tag:'adrenalina entre cafetales', desc:'Parque temático dedicado al café, con atracciones mecánicas, teleférico, shows culturales y un sendero por el cafetal.',
     how:'Desde el Terminal de Armenia hay buses hacia Montenegro y el Parque del Café; el viaje toma entre 30 y 40 minutos.',
     tips:'Compra las entradas con anticipación en temporada alta. Llega a la apertura para aprovechar el día y lleva ropa fresca.',

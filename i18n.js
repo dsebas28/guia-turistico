@@ -123,3 +123,33 @@ en: {
   'mbar.stops':'items in your tour', 'mbar.see':'See my tour'
 }
 };
+
+/* ---------- Rediseño cinematográfico: textos nuevos ---------- */
+Object.assign(I18N.es, {
+  'nav.map':'Mapa', 'nav.gallery':'Postales',
+  'hero.over':'Ruta Verde presenta', 'hero.under':'Eje Cafetero · Colombia', 'hero.scroll':'Desliza',
+  'hero.h1':'Arma tu propio tour por el <span class="serif">Quindío</span>',
+  'sec.mapKick':'Explora la región', 'sec.mapH':'El <span class="serif">mapa</span>',
+  'sec.mapP':'Los 12 pueblos y todos los lugares de la guía en un solo mapa. Toca un pueblo para ver su guía o un lugar para agregarlo a tu tour.',
+  'rmap.towns':'Pueblos', 'rmap.places':'Lugares', 'rmap.inTour':'En tu tour', 'rmap.seeTown':'Ver guía del pueblo', 'rmap.reset':'Ver todo el Quindío',
+  'sec.galKick':'Así se ve', 'sec.galH':'Postales del <span class="serif">Quindío</span>', 'sec.galP':'Palmas de cera, balcones de colores, cafetales y atardeceres. Toca una foto para verla en grande.',
+  'gal.close':'Cerrar foto', 'gal.prev':'Foto anterior', 'gal.next':'Foto siguiente',
+  'town.tabs':'Elige un pueblo',
+  'map.hint':'Cada número es una parada en el orden del día. Toca un día en la leyenda para verlo solo.',
+  'map.start':'Punto de salida', 'map.all':'Todos los días',
+  'foot.climate':'Clima: Open-Meteo · Mapa: OpenStreetMap · Emergencias: 123'
+});
+Object.assign(I18N.en, {
+  'nav.map':'Map', 'nav.gallery':'Postcards',
+  'hero.over':'Ruta Verde presents', 'hero.under':'Coffee Region · Colombia', 'hero.scroll':'Scroll',
+  'hero.h1':'Build your own tour of <span class="serif">Quindío</span>',
+  'sec.mapKick':'Explore the region', 'sec.mapH':'The <span class="serif">map</span>',
+  'sec.mapP':'All 12 towns and every place in the guide on one map. Tap a town to see its guide, or a place to add it to your tour.',
+  'rmap.towns':'Towns', 'rmap.places':'Places', 'rmap.inTour':'In your tour', 'rmap.seeTown':'See town guide', 'rmap.reset':'Show all of Quindío',
+  'sec.galKick':'What it looks like', 'sec.galH':'Postcards from <span class="serif">Quindío</span>', 'sec.galP':'Wax palms, colorful balconies, coffee farms and sunsets. Tap a photo to see it full size.',
+  'gal.close':'Close photo', 'gal.prev':'Previous photo', 'gal.next':'Next photo',
+  'town.tabs':'Choose a town',
+  'map.hint':'Each number is a stop in the order of the day. Tap a day in the legend to see it alone.',
+  'map.start':'Starting point', 'map.all':'All days',
+  'foot.climate':'Weather: Open-Meteo · Map: OpenStreetMap · Emergencies: 123'
+});

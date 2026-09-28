@@ -25,7 +25,7 @@ Object.assign(ZONE_NAME, {calarca:'Calarcá', cordoba:'Córdoba', pijao:'Pijao',
 Object.assign(ZONE_TOWN, {calarca:'calarca', cordoba:'cordoba', pijao:'pijao', genova:'genova', tebaida:'tebaida'});
 const ZLL = {
   armenia:[4.534,-75.681], circasia:[4.618,-75.636], filandia:[4.674,-75.658], salento:[4.637,-75.570], cocora:[4.638,-75.487],
-  quimbaya:[4.623,-75.763], parque:[4.541,-75.772], buenavista:[4.360,-75.740], calarca:[4.519,-75.643], cordoba:[4.392,-75.688],
+  quimbaya:[4.623,-75.763], parque:[4.541,-75.772], buenavista:[4.360,-75.740], calarca:[4.529,-75.643], cordoba:[4.392,-75.688],
   pijao:[4.335,-75.705], genova:[4.206,-75.790], tebaida:[4.453,-75.787]
 };
 
@@ -85,7 +85,7 @@ PLACES.push(
     how:'Queda en zona rural de Calarcá. Lo más práctico es ir en taxi o reservar el tour con transporte.',
     tips:'Reserva con anticipación y confirma horarios de los recorridos. Lleva zapatos cerrados.',
     todo:['Cosecha de café','Traje de recolector','Proceso del grano']},
-  {id:'calarca', name:'Calarcá', zone:'calarca', town:'Quindío', cat:['pueblo'], dur:120, lat:4.519, lon:-75.643, typ:21, code:2, alt:'1.540 m aprox.', ph:['calarca2','calarca','calarcaVista'],
+  {id:'calarca', name:'Calarcá', zone:'calarca', town:'Quindío', cat:['pueblo'], dur:120, lat:4.529, lon:-75.643, typ:21, code:2, alt:'1.540 m aprox.', ph:['calarca2','calarca','calarcaVista'],
     tag:'la Villa del Cacique', desc:'Ciudad vecina de Armenia, con plaza animada, catedral de torres puntiagudas y la Fiesta Nacional del Café cada junio.',
     how:'Bus urbano o taxi desde Armenia, 15 a 20 minutos.',
     tips:'Combínala con el Jardín Botánico el mismo día.',
