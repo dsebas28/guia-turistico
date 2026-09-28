@@ -255,49 +255,68 @@
       }
       if (dayFocus >= state.days.length) dayFocus = -1;
       tlayer.clearLayers();
-      const pts = [], dayPts = [];
+      const allPts = [], dayPts = [];
+      /* 1) qué días pasan por cada pueblo y quién duerme dónde, para repartir los marcadores sin que se tapen */
+      const daysIn = {}, nightsIn = {};
       state.days.forEach((d,i) => {
-        const col = DAYC[i % DAYC.length], on = dayFocus < 0 || dayFocus === i, op = on ? 1 : .18;
-        /* paradas en orden; paradas seguidas en el mismo pueblo comparten punto */
-        const groups = [];
-        d.stops.forEach((id, j) => { const z = ALL[id].zone, g = groups[groups.length-1]; if (g && g.z === z) g.items.push([j+1, id]); else groups.push({z, items:[[j+1, id]]}); });
-        const start = RV.startZone(i), path = [start, ...groups.map(g => g.z)];
+        d.stops.forEach(id => { const z = ALL[id].zone; daysIn[z] = daysIn[z] || []; if (!daysIn[z].includes(i)) daysIn[z].push(i); });
+        if (d.stay) (nightsIn[ALL[d.stay].zone] = nightsIn[ALL[d.stay].zone] || []).push(i);
+      });
+      const PIN = 30, GAP = 4;
+      const fanX = (z, i) => { const list = daysIn[z] || [i], k = list.indexOf(i), n = list.length; return (k - (n - 1) / 2) * (PIN + GAP); };
+      const fanHalf = z => ((daysIn[z] || [0]).length * (PIN + GAP)) / 2;
+      state.days.forEach((d,i) => {
+        const col = DAYC[i % DAYC.length], on = dayFocus < 0 || dayFocus === i, op = on ? 1 : .2;
+        /* ruta del día en el orden real de las paradas */
+        const start = RV.startZone(i), path = [start, ...d.stops.map(id => ALL[id].zone)];
         if (d.stay) path.push(ALL[d.stay].zone);
-        const mine = [];
+        const mine = path.map(z => ZLL[z]);
         for (let k = 1; k < path.length; k++){
           if (path[k] === path[k-1]) continue;
-          const seg = arc(ZLL[path[k-1]], ZLL[path[k]], .12 + i * .05);
+          const seg = arc(ZLL[path[k-1]], ZLL[path[k]], .12 + (i % 4) * .06);
           if (on) Lf.polyline(seg, {color:col, weight:10, opacity:.18, interactive:false}).addTo(tlayer);
           Lf.polyline(seg, {color:col, weight:3.5, opacity:op, dashArray: on ? null : '4 8', interactive:false}).addTo(tlayer);
         }
-        /* punto de salida del día */
+        /* punto de salida: solo si ese día no sale de donde durmió */
         if (i === 0 || !state.days[i-1].stay){
           Lf.marker(ZLL[start], {icon:Lf.divIcon({className:'', html:'<div class="spin"></div>', iconSize:[22,22], iconAnchor:[11,11]}), opacity:op, zIndexOffset:-100}).addTo(tlayer).bindPopup(`<b>${t('map.start')}</b><br>${t('day')} ${i+1} · ${zn(start)}`);
-          mine.push(ZLL[start]);
         }
-        /* marcadores numerados, corridos un poco a un lado si otro día usa el mismo pueblo */
-        const seenZ = {};
-        groups.forEach(g => {
-          const ll = ZLL[g.z], nums = g.items.map(x => x[0]), label = nums.length > 2 ? `${nums[0]}–${nums[nums.length-1]}` : nums.join('·');
-          const shift = (seenZ[g.z] = (seenZ[g.z] || 0) + 1) - 1, dx = (i % 3 - 1) * 10 + shift * 8;
-          const html = `<div class="tpin"><span style="background:${col}"></span><b>${label}</b>${on ? `<em>${esc(zn(g.z))}</em>` : ''}</div>`;
-          Lf.marker(ll, {icon:Lf.divIcon({className:'', html, iconSize:[32,32], iconAnchor:[16 - dx, 38]}), opacity:op, zIndexOffset: on ? 500 + i : 0, riseOnHover:true}).addTo(tlayer)
-            .bindPopup(`<b>${t('day')} ${i+1} · ${esc(zn(g.z))}</b><br>${g.items.map(([n,id]) => `${n}. ${esc(ALL[id].name)}`).join('<br>')}`);
-          pts.push(ll); mine.push(ll);
+        /* un marcador por pueblo y por día, con todos los números de parada de ese día en ese pueblo */
+        const byZone = {};
+        d.stops.forEach((id, j) => (byZone[ALL[id].zone] = byZone[ALL[id].zone] || []).push([j+1, id]));
+        Object.keys(byZone).forEach(z => {
+          const items = byZone[z], nums = items.map(x => x[0]);
+          const seq = nums.every((n,k) => !k || n === nums[k-1] + 1);
+          const label = nums.length > 2 ? (seq ? `${nums[0]}–${nums[nums.length-1]}` : `${nums[0]}·${nums[1]}+`) : nums.join('·');
+          const html = `<div class="tpin${label.length > 3 ? ' wide' : ''}"><span style="background:${col}"></span><b>${label}</b></div>`;
+          Lf.marker(ZLL[z], {icon:Lf.divIcon({className:'', html, iconSize:[PIN,PIN], iconAnchor:[PIN/2 - fanX(z, i), PIN + 6]}), opacity:op, zIndexOffset: on ? 600 + i : 100, riseOnHover:true, title:`${t('day')} ${i+1} · ${zn(z)}`}).addTo(tlayer)
+            .bindPopup(`<b>${t('day')} ${i+1} · ${esc(zn(z))}</b><br>${items.map(([n,id]) => `${n}. ${esc(ALL[id].name)}`).join('<br>')}`);
         });
-        if (d.stay){ const s = ALL[d.stay], ll = ZLL[s.zone]; pts.push(ll); mine.push(ll);
-          Lf.marker(ll, {icon:Lf.divIcon({className:'bedpin', html:`<span style="background:${col}">${ICON.bed}</span>`, iconSize:[30,30], iconAnchor:[-14, 15 + (i % 3 - 1) * 14]}), opacity:op, zIndexOffset:400}).addTo(tlayer).bindPopup(`<b>${t('night.of', {n:i+1})}</b><br>${esc(s.name)} · ${zn(s.zone)}`); }
-        dayPts[i] = mine;
+        dayPts[i] = mine; allPts.push(...mine);
       });
-      const focus = dayFocus >= 0 && dayPts[dayFocus] && dayPts[dayFocus].length ? dayPts[dayFocus] : pts.length ? pts : [ZLL[state.base]];
+      /* 2) nombre de cada pueblo, una sola vez, debajo del punto */
+      const named = new Set([...Object.keys(daysIn), ...Object.keys(nightsIn), ...state.days.map((_,i) => RV.startZone(i))]);
+      named.forEach(z => {
+        const vis = dayFocus < 0 || (daysIn[z] || []).includes(dayFocus) || (nightsIn[z] || []).includes(dayFocus) || RV.startZone(dayFocus) === z;
+        Lf.marker(ZLL[z], {icon:Lf.divIcon({className:'', html:`<em class="tname">${esc(zn(z))}</em>`, iconSize:[0,0], iconAnchor:[0,-12]}), interactive:false, opacity: vis ? 1 : .3, zIndexOffset:50}).addTo(tlayer);
+      });
+      /* 3) una cama por pueblo donde duermes, a la derecha de los marcadores; el globo dice qué noches */
+      Object.keys(nightsIn).forEach(z => {
+        const ns = nightsIn[z], i0 = ns[0], col = DAYC[i0 % DAYC.length], vis = dayFocus < 0 || ns.includes(dayFocus);
+        const html = `<span style="background:${col}">${ICON.bed}${ns.length > 1 ? `<small>${ns.length}</small>` : ''}</span>`;
+        Lf.marker(ZLL[z], {icon:Lf.divIcon({className:'bedpin', html, iconSize:[28,28], iconAnchor:[-(fanHalf(z) + 4), 34]}), opacity: vis ? 1 : .2, zIndexOffset:550}).addTo(tlayer)
+          .bindPopup(ns.map(i => `<b>${t('night.of', {n:i+1})}</b><br>${esc(ALL[state.days[i].stay].name)}`).join('<br>') + ` · ${esc(zn(z))}`);
+      });
+      const pts = allPts;
+      const focus = dayFocus >= 0 && dayPts[dayFocus] && dayPts[dayFocus].length > 1 ? dayPts[dayFocus] : pts.length > 1 ? pts : [ZLL[state.base], ...pts];
       tmap.invalidateSize();
-      tmap.fitBounds(Lf.latLngBounds(focus), {padding:[48,48], maxZoom:12, animate:false});
+      tmap.fitBounds(Lf.latLngBounds(focus), {paddingTopLeft:[50,60], paddingBottomRight:[70,40], maxZoom:12, animate:false});
       box.classList.toggle('nolabels', tmap.getZoom() < (box.clientWidth > 600 ? 9.75 : 10.75));
       $('#mapLegend').innerHTML = (state.days.length > 1 ? `<button type="button" data-dayf="-1" class="${dayFocus < 0 ? 'on' : ''}">${t('map.all')}</button>` : '') +
         state.days.map((d,i) => `<button type="button" data-dayf="${i}" class="${dayFocus === i ? 'on' : ''}"><i style="background:${DAYC[i % DAYC.length]}"></i>${t('day')} ${i+1}</button>`).join('') +
         `<span class="lg-note">${ICON.bed} ${t('map.night')}</span>`;
       $$('[data-dayf]').forEach(b => b.onclick = () => { dayFocus = +b.dataset.dayf; drawMap(); });
-    }).catch(() => { box.innerHTML = `<p class="map-off">${t('map.offline')}</p>`; tmap = null; });
+    }).catch(() => { tmap = null; box.innerHTML = `<p class="map-off">${t('map.offline')}<br><button type="button" class="btn sm lite" id="mapRetry">${t('map.retry')}</button></p>`; $('#mapRetry').onclick = drawMap; });
   }
 
   /* ================= MAPA DE LA REGIÓN ================= */
