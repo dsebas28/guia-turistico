@@ -272,7 +272,7 @@ const STAYS = [
     desc:'Hotel bien valorado de Filandia, cómodo y cerca del centro, buena base para el mirador y los cafés del pueblo.', tips:'Filandia es pequeño: desde el centro se camina a todo.'},
   {id:'h-santamaria', name:'Hotel Boutique Santa María', zone:'filandia', type:'boutique', fam:'hotel', ph:'filandia4', good:['Boutique','Parejas','Familias'],
     desc:'Hotel boutique de Filandia, recomendado por familias y parejas, en casa de estilo tradicional del pueblo.', tips:'Buena opción si quieres algo especial sin salir del casco urbano.'},
-  {id:'h-findland', name:'Find Land & a Rest', zone:'filandia', type:'boutique', fam:'hotel', ph:'filandia9', good:['Casa colonial','Diseño','Parejas'],
+  {id:'h-findland', name:'Find Land & a Rest', zone:'filandia', type:'boutique', fam:'hotel', ph:'cfilandia32', good:['Casa colonial','Diseño','Parejas'],
     desc:'Hotel boutique en una casa colonial restaurada, con el encanto de la arquitectura quindiana y espacios cuidados.', tips:'Muy fotogénico: encaja con el ambiente del pueblo.'},
   {id:'h-bidea', name:'Bidea Backpackers Hostel', zone:'filandia', type:'hostal', fam:'hostal', ph:'filandia5', good:['Mochileros','Económico','Viajar solo'],
     desc:'Hostal de ambiente relajado en Filandia, con habitaciones compartidas y privadas y buena onda viajera.', tips:'Alternativa tranquila a los hostales llenos de Salento.'},

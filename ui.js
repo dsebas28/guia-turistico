@@ -219,7 +219,7 @@
   }
 
   /* ================= POSTALES ================= */
-  const GAL = [['cocora2','w h'],['salento3',''],['filandia7',''],['cafetal2','h'],['pijao3',''],['buenavista2','w'],['cocora7',''],['filandia9',''],['palmsSign','h'],['salento5','w'],['cafeGranos',''],['calarcaVista','w'],['tebaida2','w'],['filandia5','w']].filter(([k]) => PHOTOS[k]);
+  const GAL = [['cocora2','w h'],['salento3',''],['filandia7',''],['cafetal2','h'],['pijao3',''],['buenavista2','w'],['cocora7',''],['cfilandia32',''],['palmsSign','h'],['salento5','w'],['cafeGranos',''],['calarcaVista','w'],['tebaida2','w'],['filandia5','w']].filter(([k]) => PHOTOS[k]);
   function renderGallery(){
     $('#gallery').innerHTML = GAL.map(([k,c], i) => `<button type="button" class="${c}" data-gal="${i}" data-cap="${esc(PHOTOS[k].t)}" aria-label="${esc(PHOTOS[k].t)}">${pic(k, c.includes('w') || c.includes('h'), PHOTOS[k].t)}</button>`).join('');
   }
