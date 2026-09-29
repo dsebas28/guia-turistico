@@ -85,6 +85,7 @@
 
   /* ================= GUÍA POR PUEBLO (pestañas + escenario) ================= */
   let curTown = RV.townIds[0];
+  RV.curTown = () => curTown;
   function renderTowns(){
     $('#townTabs').innerHTML = RV.townIds.map(id => `<button type="button" class="t-tab" role="tab" id="tab-${id}" aria-controls="towns" aria-selected="${id === curTown}" tabindex="${id === curTown ? 0 : -1}" data-town="${id}">${pic(TOWNS[id].ph, false, '')}<span>${TOWNS[id].name}</span></button>`).join('');
     const id = curTown, tw = TOWNS[id], to = townObj(id);
@@ -104,7 +105,7 @@
   }
   function showTown(id, scroll){
     if (!TOWNS[id]) return;
-    curTown = id; renderTowns(); RV.markTown && RV.markTown(id);
+    curTown = id; renderTowns(); RV.markTown(id);
     const tab = $('#tab-' + id); if (tab) tab.scrollIntoView({block:'nearest', inline:'center', behavior: RV.reduce ? 'auto' : 'smooth'});
     if (scroll) goTo('#pueblos');
   }
@@ -188,7 +189,7 @@
     $('#mbar').classList.toggle('show', n + nn > 0);
     ['btnPdf','btnCopy','btnPrint','btnAuto','btnClear','btnShare'].forEach(id => $('#'+id).disabled = !(n + nn));
     if (!n && !nn){
-      $('#days').innerHTML = `<div class="no-tour"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#86B86B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><b style="font-size:20px">${t('tour.empty')}</b><span>${t('tour.emptyHint')}</span><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a class="btn lime sm" href="#lugares">${t('tour.pickPlaces')}</a><a class="btn lite sm" href="#sugeridos">${t('nav.presets')}</a></div></div>`;
+      $('#days').innerHTML = `<div class="no-tour"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><b style="font-size:20px">${t('tour.empty')}</b><span>${t('tour.emptyHint')}</span><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a class="btn lime sm" href="#lugares">${t('tour.pickPlaces')}</a><a class="btn lite sm" href="#sugeridos">${t('nav.presets')}</a></div></div>`;
       $('#tourMapCard').hidden = true;
       return;
     }
@@ -196,9 +197,9 @@
     const opts = i => state.days.map((_,k) => `<option value="${k}" ${k===i?'selected':''}>${t('day')} ${k+1}</option>`).join('');
     $('#days').innerHTML = state.days.map((d,i) => {
       const sch = RV.schedule(i), end = sch.length ? sch[sch.length-1].end : 0, full = end > 1260;
-      return `<div class="day" style="animation-delay:${i*.06}s"><div class="day-h"><span class="n" style="background:${DAYC[i % DAYC.length]}">${i+1}</span><div><h4>${t('day')} ${i+1}</h4><small>${RV.dayDate(i) || t('day.noDate')}</small></div><span class="load ${full?'full':''}">${sch.length ? (full ? t('day.full') : t('day.ends', {h:RV.fmtT(end)})) : t('day.free')}</span></div>
+      return `<div class="day" style="animation-delay:${i*.06}s"><div class="day-h"><span class="n" style="background:${RV.DAYC[i % RV.DAYC.length]}">${i+1}</span><div><h4>${t('day')} ${i+1}</h4><small>${RV.dayDate(i) || t('day.noDate')}</small></div>${RV.forecastChip(i)}<span class="load ${full?'full':''}">${sch.length ? (full ? t('day.full') : t('day.ends', {h:RV.fmtT(end)})) : t('day.free')}</span></div>
         <div class="from">${t('day.from', {town:zn(RV.startZone(i))})}${i > 0 && state.days[i-1].stay ? ' · ' + t('day.slept', {name:esc(ALL[state.days[i-1].stay].name)}) : ''}</div>
-        <div class="stops">${sch.length ? sch.map((s,j) => { const it = ALL[s.id], k = RV.mainPh(it); return `${s.from !== it.zone ? `<div class="travel"><i></i>${t('day.transfer', {town:zn(s.from), m:s.travel})}</div>` : (j ? '<div class="travel"><i></i></div>' : '')}
+        <div class="stops">${sch.length ? sch.map((s,j) => { const it = ALL[s.id], k = RV.mainPh(it); return `${s.from !== it.zone ? `<div class="travel"><i></i>${t('day.transfer', {town:zn(s.from), m:s.travel})}${s.km ? ` <span class="km">· ${s.km} km</span>` : ''}</div>` : (j ? '<div class="travel"><i></i></div>' : '')}
           <div class="stop"><div class="time">${RV.fmtT(s.start)}<small>${dur(it.dur)}</small></div><div class="th">${pic(k, false, PHOTOS[k].t)}</div>
             <div style="min-width:0"><b>${esc(it.name)}</b><div class="sub"><span class="tg ${it.kind==='lugar'?'l':'c'}">${it.kind==='lugar' ? t('tag.place') : RV.slot(it.slot).toUpperCase()}</span>${zn(it.zone)}</div></div>
             <div class="ctr"><button type="button" class="ic-btn" data-up="${s.id}" aria-label="${t('aria.up')}" ${j===0?'disabled':''}>${ICON.up}</button><button type="button" class="ic-btn" data-down="${s.id}" aria-label="${t('aria.down')}" ${j===sch.length-1?'disabled':''}>${ICON.down}</button>
@@ -211,170 +212,9 @@
     $$('[data-del]').forEach(b => b.onclick = () => removeItem(b.dataset.del));
     $$('[data-mv]').forEach(s => s.onchange = () => moveDay(s.dataset.mv, +s.value));
     $$('[data-stay]').forEach(s => s.onchange = () => { state.days[+s.dataset.stay].stay = s.value || null; RV.toast(s.value ? t('toast.night', {name:ALL[s.value].name, n:+s.dataset.stay+1}) : t('toast.stayRemoved')); commit(); });
-    drawMap();
-    RV.refreshRegion && RV.refreshRegion();
+    RV.drawTourMap();
+    RV.refreshRegion();
   }
-
-  /* ================= MAPAS (Leaflet + satélite de Esri) ================= */
-  const DAYC = ['#F2A33A','#A8E063','#5CC8FF','#E8743B','#F6D365','#3CC9A0','#F3EFE4'];
-  let leaflet = null;
-  function loadLeaflet(){
-    if (leaflet) return leaflet;
-    const get = (tag, attrs) => new Promise((ok, no) => { const el = document.createElement(tag); Object.assign(el, attrs); el.onload = ok; el.onerror = no; document.head.appendChild(el); });
-    /* esperamos también la hoja de estilos: sin ella las teselas salen desordenadas */
-    leaflet = Promise.all([
-      get('link', {rel:'stylesheet', href:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css'}),
-      get('script', {src:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js'})
-    ]).then(() => { if (!window.L) throw new Error('leaflet'); });
-    leaflet.catch(() => { leaflet = null; });
-    return leaflet;
-  }
-  RV.loadLeaflet = loadLeaflet;
-  /* Satélite de Esri con carreteras encima. No pide clave y funciona aunque abras la página con doble clic
-     (los servidores de OpenStreetMap bloquean las páginas abiertas desde un archivo). */
-  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
-  RV.tiles = Lf => Lf.layerGroup([
-    Lf.tileLayer(ESRI + 'World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:18, maxNativeZoom:17, className:'sat-tiles', attribution:'Imágenes: <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, Maxar, Earthstar Geographics'}),
-    Lf.tileLayer(ESRI + 'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', {maxZoom:18, maxNativeZoom:17, className:'road-tiles', attribution:'Vías: Esri, HERE, © OpenStreetMap'})
-  ]);
-  /* curva suave entre dos puntos, para que las rutas no se monten una sobre otra */
-  function arc(a, b, bend){
-    const [y1,x1] = a, [y2,x2] = b, mx = (x1+x2)/2, my = (y1+y2)/2, dx = x2-x1, dy = y2-y1;
-    const cx = mx - dy * bend, cy = my + dx * bend, out = [];
-    for (let k = 0; k <= 16; k++){ const u = k/16, v = 1-u; out.push([v*v*y1 + 2*v*u*cy + u*u*y2, v*v*x1 + 2*v*u*cx + u*u*x2]); }
-    return out;
-  }
-  let tmap = null, tlayer = null, dayFocus = -1;
-  function drawMap(){
-    const box = $('#tourMap'); if (!box) return;
-    loadLeaflet().then(() => {
-      const Lf = window.L;
-      if (!tmap){
-        box.innerHTML = '';
-        tmap = RV.map = Lf.map(box, {scrollWheelZoom:false, zoomControl:true, attributionControl:true, zoomSnap:.25});
-        /* con el mapa muy alejado los nombres se montan: se ocultan */
-        tmap.on('zoomend', () => box.classList.toggle('nolabels', tmap.getZoom() < (box.clientWidth > 600 ? 9.75 : 10.75)));
-        RV.tiles(Lf).addTo(tmap);
-        tlayer = Lf.layerGroup().addTo(tmap);
-        new ResizeObserver(() => tmap.invalidateSize()).observe(box);
-      }
-      if (dayFocus >= state.days.length) dayFocus = -1;
-      tlayer.clearLayers();
-      const allPts = [], dayPts = [];
-      /* 1) qué días pasan por cada pueblo y quién duerme dónde, para repartir los marcadores sin que se tapen */
-      const daysIn = {}, nightsIn = {};
-      state.days.forEach((d,i) => {
-        d.stops.forEach(id => { const z = ALL[id].zone; daysIn[z] = daysIn[z] || []; if (!daysIn[z].includes(i)) daysIn[z].push(i); });
-        if (d.stay) (nightsIn[ALL[d.stay].zone] = nightsIn[ALL[d.stay].zone] || []).push(i);
-      });
-      const PIN = 30, GAP = 4;
-      const fanX = (z, i) => { const list = daysIn[z] || [i], k = list.indexOf(i), n = list.length; return (k - (n - 1) / 2) * (PIN + GAP); };
-      const fanHalf = z => ((daysIn[z] || [0]).length * (PIN + GAP)) / 2;
-      state.days.forEach((d,i) => {
-        const col = DAYC[i % DAYC.length], on = dayFocus < 0 || dayFocus === i, op = on ? 1 : .2;
-        /* ruta del día en el orden real de las paradas */
-        const start = RV.startZone(i), path = [start, ...d.stops.map(id => ALL[id].zone)];
-        if (d.stay) path.push(ALL[d.stay].zone);
-        const mine = path.map(z => ZLL[z]);
-        for (let k = 1; k < path.length; k++){
-          if (path[k] === path[k-1]) continue;
-          const seg = arc(ZLL[path[k-1]], ZLL[path[k]], .12 + (i % 4) * .06);
-          if (on) Lf.polyline(seg, {color:col, weight:10, opacity:.18, interactive:false}).addTo(tlayer);
-          Lf.polyline(seg, {color:col, weight:3.5, opacity:op, dashArray: on ? null : '4 8', interactive:false}).addTo(tlayer);
-        }
-        /* punto de salida: solo si ese día no sale de donde durmió */
-        if (i === 0 || !state.days[i-1].stay){
-          Lf.marker(ZLL[start], {icon:Lf.divIcon({className:'', html:'<div class="spin"></div>', iconSize:[22,22], iconAnchor:[11,11]}), opacity:op, zIndexOffset:-100}).addTo(tlayer).bindPopup(`<b>${t('map.start')}</b><br>${t('day')} ${i+1} · ${zn(start)}`);
-        }
-        /* un marcador por pueblo y por día, con todos los números de parada de ese día en ese pueblo */
-        const byZone = {};
-        d.stops.forEach((id, j) => (byZone[ALL[id].zone] = byZone[ALL[id].zone] || []).push([j+1, id]));
-        Object.keys(byZone).forEach(z => {
-          const items = byZone[z], nums = items.map(x => x[0]);
-          const seq = nums.every((n,k) => !k || n === nums[k-1] + 1);
-          const label = nums.length > 2 ? (seq ? `${nums[0]}–${nums[nums.length-1]}` : `${nums[0]}·${nums[1]}+`) : nums.join('·');
-          const html = `<div class="tpin${label.length > 3 ? ' wide' : ''}"><span style="background:${col}"></span><b>${label}</b></div>`;
-          Lf.marker(ZLL[z], {icon:Lf.divIcon({className:'', html, iconSize:[PIN,PIN], iconAnchor:[PIN/2 - fanX(z, i), PIN + 6]}), opacity:op, zIndexOffset: on ? 600 + i : 100, riseOnHover:true, title:`${t('day')} ${i+1} · ${zn(z)}`}).addTo(tlayer)
-            .bindPopup(`<b>${t('day')} ${i+1} · ${esc(zn(z))}</b><br>${items.map(([n,id]) => `${n}. ${esc(ALL[id].name)}`).join('<br>')}`);
-        });
-        dayPts[i] = mine; allPts.push(...mine);
-      });
-      /* 2) nombre de cada pueblo, una sola vez, debajo del punto */
-      const named = new Set([...Object.keys(daysIn), ...Object.keys(nightsIn), ...state.days.map((_,i) => RV.startZone(i))]);
-      named.forEach(z => {
-        const vis = dayFocus < 0 || (daysIn[z] || []).includes(dayFocus) || (nightsIn[z] || []).includes(dayFocus) || RV.startZone(dayFocus) === z;
-        Lf.marker(ZLL[z], {icon:Lf.divIcon({className:'', html:`<em class="tname">${esc(zn(z))}</em>`, iconSize:[0,0], iconAnchor:[0,-12]}), interactive:false, opacity: vis ? 1 : .3, zIndexOffset:50}).addTo(tlayer);
-      });
-      /* 3) una cama por pueblo donde duermes, a la derecha de los marcadores; el globo dice qué noches */
-      Object.keys(nightsIn).forEach(z => {
-        const ns = nightsIn[z], i0 = ns[0], col = DAYC[i0 % DAYC.length], vis = dayFocus < 0 || ns.includes(dayFocus);
-        const html = `<span style="background:${col}">${ICON.bed}${ns.length > 1 ? `<small>${ns.length}</small>` : ''}</span>`;
-        Lf.marker(ZLL[z], {icon:Lf.divIcon({className:'bedpin', html, iconSize:[28,28], iconAnchor:[-(fanHalf(z) + 4), 34]}), opacity: vis ? 1 : .2, zIndexOffset:550}).addTo(tlayer)
-          .bindPopup(ns.map(i => `<b>${t('night.of', {n:i+1})}</b><br>${esc(ALL[state.days[i].stay].name)}`).join('<br>') + ` · ${esc(zn(z))}`);
-      });
-      const pts = allPts;
-      const focus = dayFocus >= 0 && dayPts[dayFocus] && dayPts[dayFocus].length > 1 ? dayPts[dayFocus] : pts.length > 1 ? pts : [ZLL[state.base], ...pts];
-      tmap.invalidateSize();
-      tmap.fitBounds(Lf.latLngBounds(focus), {paddingTopLeft:[50,60], paddingBottomRight:[70,40], maxZoom:12, animate:false});
-      box.classList.toggle('nolabels', tmap.getZoom() < (box.clientWidth > 600 ? 9.75 : 10.75));
-      $('#mapLegend').innerHTML = (state.days.length > 1 ? `<button type="button" data-dayf="-1" class="${dayFocus < 0 ? 'on' : ''}">${t('map.all')}</button>` : '') +
-        state.days.map((d,i) => `<button type="button" data-dayf="${i}" class="${dayFocus === i ? 'on' : ''}"><i style="background:${DAYC[i % DAYC.length]}"></i>${t('day')} ${i+1}</button>`).join('') +
-        `<span class="lg-note">${ICON.bed} ${t('map.night')}</span>`;
-      $$('[data-dayf]').forEach(b => b.onclick = () => { dayFocus = +b.dataset.dayf; drawMap(); });
-    }).catch(() => { tmap = null; box.innerHTML = `<p class="map-off">${t('map.offline')}<br><button type="button" class="btn sm lite" id="mapRetry">${t('map.retry')}</button></p>`; $('#mapRetry').onclick = drawMap; });
-  }
-
-  /* ================= MAPA DE LA REGIÓN ================= */
-  let rmap = null, rlayer = null, rtowns = {};
-  const REGION = [[4.19,-75.84],[4.70,-75.46]];
-  const FITPAD = () => innerWidth < 640 ? {paddingTopLeft:[70,10], paddingBottomRight:[60,110]} : {paddingTopLeft:[40,20], paddingBottomRight:[40,70]};
-  const LEFT = ['armenia','quimbaya','montenegro','tebaida','buenavista','genova']; /* nombre a la izquierda para que no se tapen */
-  function townLL(id){ const z = TOWNS[id].zones[0]; return id === 'montenegro' ? [4.566,-75.751] : ZLL[z]; }
-  function drawRegion(){
-    const box = $('#regionMap'); if (!box || rmap) return;
-    loadLeaflet().then(() => {
-      const Lf = window.L;
-      rmap = Lf.map(box, {scrollWheelZoom:false, zoomControl:true, minZoom:9, zoomSnap:.25, maxBounds:Lf.latLngBounds(REGION).pad(.6)});
-      RV.tiles(Lf).addTo(rmap);
-      rmap.fitBounds(REGION, FITPAD());
-      new ResizeObserver(() => rmap.invalidateSize()).observe(box);
-      rlayer = Lf.layerGroup().addTo(rmap);
-      refreshRegion(); RV.refreshRegion();
-    }).catch(() => { box.innerHTML = `<p class="map-off">${t('map.offline')}</p>`; });
-  }
-  function placePop(p){
-    const on = RV.inTour(p.id), k = RV.mainPh(p);
-    return `<div class="rpop">${pic(k, false, PHOTOS[k].t)}<small>${esc(zn(p.zone))}</small><b>${esc(p.name)}</b><span>${esc(L(p,'tag'))}</span>
-      <div class="row"><button type="button" class="btn ${on ? 'lime' : ''}" data-toggle="${p.id}">${on ? ICON.check + ' ' + t('btn.inTour') : ICON.plus + ' ' + t('btn.add')}</button><button type="button" class="btn ghost" data-open="${p.id}">${t('btn.view')}</button></div></div>`;
-  }
-  let rplaces = {};
-  function refreshRegion(){
-    if (!rmap) return;
-    const Lf = window.L; rmap.closePopup(); rlayer.clearLayers(); rtowns = {}; rplaces = {};
-    RV.townIds.forEach(id => {
-      const tw = TOWNS[id], to = townObj(id);
-      const m = Lf.marker(townLL(id), {icon:Lf.divIcon({className:'', html:`<div class="rtown ${LEFT.includes(id) ? 'l' : ''} ${id === curTown ? 'on' : ''}"><i></i><b>${tw.name}</b></div>`, iconSize:[0,0], iconAnchor:[0,0]}), zIndexOffset:1000, riseOnHover:true, keyboard:true, title:tw.name}).addTo(rlayer);
-      m.bindPopup(() => { const pl = ALL[id] && ALL[id].kind === 'lugar' ? ALL[id] : null, on = pl && RV.inTour(id);
-        return `<div class="rpop">${pic(tw.ph, false, PHOTOS[tw.ph].t)}<small>${t('nav.towns')}</small><b>${tw.name}</b><span>${esc(L(to,'tag'))}</span><div class="row"><button type="button" class="btn" data-town="${id}" data-scroll="1">${t('rmap.seeTown')}</button>${pl ? `<button type="button" class="btn ${on ? 'lime' : 'ghost'}" data-toggle="${id}">${on ? ICON.check : ICON.plus}</button>` : ''}</div></div>`; }, {minWidth:250, maxWidth:280});
-      rtowns[id] = m;
-    });
-    PLACES.forEach(p => {
-      if (RV.townIds.includes(p.id)) return; /* el pueblo ya tiene su marcador */
-      const m = Lf.marker([p.lat, p.lon], {icon:Lf.divIcon({className:'', html:`<div class="rplace ${RV.inTour(p.id) ? 'in' : ''}"></div>`, iconSize:[14,14], iconAnchor:[7,7]}), riseOnHover:true, title:p.name}).addTo(rlayer);
-      m.bindPopup(() => placePop(p), {minWidth:250, maxWidth:280});
-      rplaces[p.id] = m;
-    });
-  }
-  /* al agregar o quitar algo: solo cambia el color de los marcadores y el botón del globo abierto */
-  RV.refreshRegion = () => {
-    if (!rmap) return;
-    Object.keys(rplaces).forEach(id => { const el = rplaces[id].getElement(); if (el) el.firstElementChild.classList.toggle('in', RV.inTour(id)); });
-    Object.keys(rtowns).forEach(id => { const el = rtowns[id].getElement(); if (el && ALL[id]) el.firstElementChild.classList.toggle('in', RV.inTour(id)); });
-    const pop = rmap._popup; if (pop && rmap.hasLayer(pop)) pop.update();
-  };
-  RV.markTown = id => { $$('.rtown').forEach(el => el.classList.remove('on')); const m = rtowns[id]; if (m && m.getElement()) m.getElement().querySelector('.rtown').classList.add('on'); };
-  $('#rmReset').onclick = () => { if (rmap){ rmap.closePopup(); rmap.flyToBounds(REGION, {...FITPAD(), duration: RV.reduce ? 0 : .8}); } };
-  new IntersectionObserver((es, ob) => es.forEach(e => { if (e.isIntersecting){ drawRegion(); ob.disconnect(); } }), {rootMargin:'400px'}).observe($('#regionMap'));
 
   /* ================= POSTALES ================= */
   const GAL = [['cocora2','w h'],['salento3',''],['filandia7',''],['cafetal2','h'],['pijao3',''],['buenavista2','w'],['cocora7',''],['filandia9',''],['palmsSign','h'],['salento5',''],['cafeGranos',''],['calarcaVista','w'],['tebaida2',''],['filandia5','']].filter(([k]) => PHOTOS[k]);
@@ -448,7 +288,7 @@
     const tg = e.target.closest('[data-toggle]'); if (tg){ toggle(tg.dataset.toggle); return; }
     const o = e.target.closest('[data-open]'); if (o){ openDrawer(o.dataset.open); return; }
     const g = e.target.closest('[data-goto]'); if (g){ goTo('#' + g.dataset.goto); return; }
-    const tw = e.target.closest('[data-town]'); if (tw){ if (rmap) rmap.closePopup(); showTown(tw.dataset.town, !!tw.dataset.scroll); return; }
+    const tw = e.target.closest('[data-town]'); if (tw){ RV.closeRegionPopup(); showTown(tw.dataset.town, !!tw.dataset.scroll); return; }
     const a = e.target.closest('a[href^="#"]'); if (a && a.id !== 'dGo'){ const tgt = $(a.getAttribute('href')); if (tgt){ e.preventDefault(); if ($('#drawer').classList.contains('open')) closeDrawer(); closeMenu(); goTo(tgt); } return; }
     if (!e.target.closest('.nav')) closeMenu();
   });
@@ -475,7 +315,7 @@
 
   /* ================= IDIOMA ================= */
   $('#langBtn').onclick = () => { RV.lang = RV.lang === 'en' ? 'es' : 'en'; RV.store.set('rv-lang', RV.lang); renderAll(); RV.toast(t('toast.lang')); };
-  function renderAll(){ applyStatic(); renderFilters(); renderPresets(); renderTowns(); renderSeasons(); renderCards(); renderTour(); renderCredits(); heroCredit(); renderGallery(); refreshRegion(); RV.refreshRegion(); }
+  function renderAll(){ applyStatic(); renderFilters(); renderPresets(); renderTowns(); renderSeasons(); renderCards(); renderTour(); renderCredits(); heroCredit(); renderGallery(); RV.buildRegion(); }
   RV.renderAll = renderAll;
 
   function renderCredits(){
@@ -521,4 +361,18 @@
     (Array.isArray(data) ? data : [data]).forEach((d,i) => { const c = d.current; if (c && PLACES[i]) ALL[PLACES[i].id].wx = {t:c.temperature_2m, code:c.weather_code, live:true}; });
     renderCards(); if (!RV.isEmpty()) renderTour();
   }).catch(() => {});
+
+  /* pronóstico para las fechas del viaje */
+  RV.loadForecast().then(() => { if (!RV.isEmpty()) renderTour(); }).catch(() => {});
+
+  /* sin internet: guarda la página en el teléfono la primera vez que se abre (solo publicada en internet;
+     abriendo el archivo con doble clic el navegador no lo permite) */
+  if (/^https?:$/.test(location.protocol)){ const mf = document.createElement('link'); mf.rel = 'manifest'; mf.href = 'manifest.webmanifest'; document.head.appendChild(mf); }
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+    addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(reg => {
+      if (!navigator.serviceWorker.controller) reg.addEventListener('updatefound', () => {
+        const w = reg.installing; if (w) w.addEventListener('statechange', () => { if (w.state === 'activated') RV.toast(t('off.ready')); });
+      });
+    }).catch(() => {}));
+  }
 })();

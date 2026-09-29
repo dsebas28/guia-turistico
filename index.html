@@ -7,16 +7,23 @@
 <meta name="description" content="Guía gratuita del Quindío: arma tu tour por Salento, el Valle del Cocora, Filandia y 12 pueblos del Eje Cafetero. Restaurantes, hospedaje, actividades, mapa, calendario y guía en PDF.">
 <meta name="theme-color" content="#06110C">
 <meta name="robots" content="index,follow">
-<link rel="alternate" hreflang="es" href="?lang=es">
-<link rel="alternate" hreflang="en" href="?lang=en">
+<!-- Dirección oficial de la página (GitHub Pages). Si la publicas en otro lado, cambia esta dirección aquí, en sitemap.xml y en robots.txt -->
+<link rel="canonical" href="https://dsebas28.github.io/guia-turistico/">
+<link rel="alternate" hreflang="es" href="https://dsebas28.github.io/guia-turistico/?lang=es">
+<link rel="alternate" hreflang="en" href="https://dsebas28.github.io/guia-turistico/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://dsebas28.github.io/guia-turistico/">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <!-- Redes sociales: al compartir el enlace en WhatsApp o Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ruta Verde">
+<meta property="og:url" content="https://dsebas28.github.io/guia-turistico/">
 <meta property="og:locale" content="es_CO">
 <meta property="og:locale:alternate" content="en_US">
 <meta property="og:title" content="Ruta Verde — Arma tu tour por el Quindío">
 <meta property="og:description" content="Guía gratuita del Eje Cafetero: lugares, restaurantes, hospedaje y actividades en 12 pueblos del Quindío, con tu itinerario en PDF.">
-<meta property="og:image" content="https://commons.wikimedia.org/wiki/Special:FilePath/Valle%20del%20Cocora%20junio%202025%2008.jpg?width=1200">
+<meta property="og:image" content="https://dsebas28.github.io/guia-turistico/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Palmas de cera en el Valle del Cocora">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 32'%3E%3Cpath d='M14 31V12' stroke='%233CC9A0' stroke-width='2.5' stroke-linecap='round'/%3E%3Cpath d='M14 12C10 5 4 5 1 8M14 12c4-7 10-7 13-4M14 12C12 5 14 2 14 1M14 12c-5-2-9 1-11 4M14 12c5-2 9 1 11 4' stroke='%23A8E063' stroke-width='2.6' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
@@ -64,7 +71,7 @@
     <div class="hero-shade"></div>
     <div class="hero-logo" aria-hidden="true">
       <span class="hl-over" data-i18n="hero.over">Ruta Verde presenta</span>
-      <span class="hl-word">Quindío</span>
+      <span class="hl-word">Quind<span class="acc">i</span>o</span>
       <span class="hl-under" data-i18n="hero.under">Eje Cafetero · Colombia</span>
     </div>
     <div class="wrap hero-copy">
@@ -107,7 +114,10 @@
   <div class="rm-frame rv">
     <div id="regionMap" role="region" aria-label="Mapa del Quindío"></div>
     <div class="rm-ui">
-      <div class="rm-legend"><span><i class="lt"></i><span data-i18n="rmap.towns">Pueblos</span></span><span><i class="lp"></i><span data-i18n="rmap.places">Lugares</span></span><span><i class="li"></i><span data-i18n="rmap.inTour">En tu tour</span></span></div>
+      <div class="rm-left">
+        <div class="rm-layers" id="rmLayers"></div>
+        <div class="rm-legend"><span><i class="lt"></i><span data-i18n="rmap.towns">Pueblos</span></span><span><i class="lp"></i><span data-i18n="rmap.places">Lugares</span></span><span><i class="li"></i><span data-i18n="rmap.inTour">En tu tour</span></span></div>
+      </div>
       <button type="button" class="btn lite sm" id="rmReset" data-i18n="rmap.reset">Ver todo el Quindío</button>
     </div>
   </div>
@@ -269,13 +279,16 @@
   <button type="button" class="lb-nav next" id="lbNext" data-i18n-aria="gal.next" aria-label="Foto siguiente"></button>
 </div>
 <div id="printArea"></div>
-<script src="data.js?v=4"></script>
-<script src="data2.js?v=4"></script>
-<script src="i18n.js?v=4"></script>
-<script src="en.js?v=4"></script>
-<script src="en2.js?v=4"></script>
-<script src="core.js?v=4"></script>
-<script src="ui.js?v=4"></script>
-<script src="pdf.js?v=4"></script>
+<script src="data.js?v=5"></script>
+<script src="data2.js?v=5"></script>
+<script src="geo.js?v=5"></script>
+<script src="routes.js?v=5"></script>
+<script src="i18n.js?v=5"></script>
+<script src="en.js?v=5"></script>
+<script src="en2.js?v=5"></script>
+<script src="core.js?v=5"></script>
+<script src="maps.js?v=5"></script>
+<script src="ui.js?v=5"></script>
+<script src="pdf.js?v=5"></script>
 </body>
 </html>

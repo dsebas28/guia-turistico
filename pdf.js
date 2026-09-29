@@ -101,13 +101,16 @@
       doc.addPage(); y = M;
       fill(C.forest); doc.rect(0, 0, W, 34, 'F');
       T(upper(`${t('day')} ${i+1} · ${t('day.from', {town:zn(RV.startZone(i))})}`), M, 15, {s:10, b:true, c:C.palm}); T(state.date ? RV.dayDate(i).replace(/^\S/, c => c.toUpperCase()) : t('pdf.itinerary'), M, 26, {s:20, b:true, c:C.paper});
+      /* pronóstico del día, si la fecha ya está dentro de los 16 días que da Open-Meteo */
+      const f = RV.dayForecast(i);
+      if (f && f !== 'far') T(`${t('wx.' + RV.wxType(f.code))} · ${Math.round(f.min)}°–${Math.round(f.max)}°C${f.rain != null ? ` · ${f.rain}% ${t('fc.rain')}` : ''} · ${zn(f.zone)}`, W - M, 26, {s:9.5, c:C.mint, a:'right'});
       y = 46;
       const sch = RV.schedule(i);
       if (!sch.length){ T(t('pdf.freeDay'), M, y, {s:11, i:true, c:C.muted}); y += 10; }
       sch.forEach(s => {
         const it = ALL[s.id], isP = it.kind === 'lugar';
         ensure(40);
-        if (s.from !== it.zone){ T(t('day.transfer', {town:zn(s.from), m:s.travel}), M + 28, y, {s:8.5, i:true, c:C.muted}); y += 6; }
+        if (s.from !== it.zone){ T(t('day.transfer', {town:zn(s.from), m:s.travel}) + (s.km ? ` · ${s.km} km` : ''), M + 28, y, {s:8.5, i:true, c:C.muted}); y += 6; }
         const top = y;
         fill(isP ? C.moss : C.clay); doc.roundedRect(M, y - 4, 22, 9, 2, 2, 'F');
         T(RV.fmtT(s.start), M + 11, y + 1.8, {s:8.5, b:true, c:[255,255,255], a:'center'});

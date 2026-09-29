@@ -1,0 +1,15 @@
+{
+  "name": "Ruta Verde — Guía del Quindío",
+  "short_name": "Ruta Verde",
+  "description": "Arma tu tour por el Quindío: lugares, restaurantes, hospedaje, mapa y guía en PDF.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#06110C",
+  "theme_color": "#06110C",
+  "icons": [
+    {"src": "img/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "img/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

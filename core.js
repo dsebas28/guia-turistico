@@ -20,7 +20,7 @@
   RV.locale = () => RV.lang === 'en' ? 'en-US' : 'es-CO';
 
   /* ================= FOTOS (locales, con respaldo en Wikimedia) ================= */
-  RV.pSrc = (k, big) => `img/${k}-${big ? 'l' : 's'}.jpg`;
+  RV.pSrc = (k, big) => `img/${k}-${big ? 'l' : 's'}.webp`;
   RV.pRemote = (k, w) => 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(PHOTOS[k].f) + '?width=' + w;
   RV.pic = (k, big, alt, eager) => `<img src="${RV.pSrc(k, big)}" data-k="${k}" data-w="${big ? 1280 : 640}" alt="${esc(alt || PHOTOS[k].t)}" ${eager ? '' : 'loading="lazy"'} decoding="async">`;
   document.addEventListener('error', e => { const im = e.target; if (im.tagName === 'IMG' && im.dataset.k && !im.dataset.fb){ im.dataset.fb = 1; im.src = RV.pRemote(im.dataset.k, im.dataset.w); } }, true);
@@ -137,7 +137,17 @@
   };
   /* distancia real entre pueblos: línea recta × 1,4 por curvas, a 35 km/h de promedio */
   RV.km = (a, b) => { const [la1,lo1] = ZLL[a], [la2,lo2] = ZLL[b], r = Math.PI/180; const x = Math.sin((la2-la1)*r/2)**2 + Math.cos(la1*r)*Math.cos(la2*r)*Math.sin((lo2-lo1)*r/2)**2; return 12742 * Math.asin(Math.sqrt(x)); };
-  RV.travel = (a, b) => (!a || !b || a === b) ? 10 : Math.round((RV.km(a,b) * 1.4 / 35 * 60 + 10) / 5) * 5;
+  /* tiempo de traslado: con la ruta real por carretera (routes.js) si existe; el bus va más lento que un carro
+     y sumamos 10 minutos de espera. Si no hay ruta: línea recta × 1,4 a 35 km/h. */
+  RV.roadKm = (a, b) => { const r = RV.route && RV.route(a, b); return r ? Math.round(r.km) : 0; };
+  RV.travel = (a, b) => {
+    if (!a || !b || a === b) return 10;
+    const r = RV.route && RV.route(a, b);
+    const min = r ? r.min * 1.3 : RV.km(a,b) * 1.4 / 35 * 60;
+    return Math.round((min + 10) / 5) * 5;
+  };
+  /* ubicación exacta de un restaurante u hospedaje (geo.js), si la tenemos */
+  RV.exactLL = id => (typeof GEO !== 'undefined' && GEO[id]) ? GEO[id] : null;
   RV.fmtT = m => { let h = Math.floor(m/60) % 24; const mm = m % 60, pm = h >= 12; h = h % 12 || 12; return RV.lang === 'en' ? `${h}:${String(mm).padStart(2,'0')} ${pm ? 'PM' : 'AM'}` : `${h}:${String(mm).padStart(2,'0')} ${pm ? 'p. m.' : 'a. m.'}`; };
   RV.startZone = i => { if (i === 0) return state.base; const prev = state.days[i-1].stay; return prev ? ALL[prev].zone : (state.days[i].stay ? ALL[state.days[i].stay].zone : state.base); };
   RV.schedule = i => {
@@ -147,7 +157,7 @@
       tm += tr;
       if (it.slot === 'almuerzo' && tm < 720) tm = 720;
       if (it.slot === 'cena' && tm < 1110) tm = 1110;
-      out.push({id, start:tm, end:tm + it.dur, travel:tr, from:prev});
+      out.push({id, start:tm, end:tm + it.dur, travel:tr, from:prev, km: prev !== it.zone ? RV.roadKm(prev, it.zone) : 0});
       tm += it.dur; prev = it.zone;
     });
     return out;
@@ -155,6 +165,37 @@
   RV.dayDate = i => { if (!state.date) return ''; const d = new Date(state.date + 'T12:00'); d.setDate(d.getDate() + i); return d.toLocaleDateString(RV.locale(), {weekday:'long', day:'numeric', month:'long'}); };
   RV.durTxt = m => m >= 60 ? `${Math.floor(m/60)} h${m%60 ? ' ' + (m%60) + ' min' : ''}` : `${m} min`;
   RV.norm = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+
+  /* ================= PRONÓSTICO PARA LAS FECHAS DEL VIAJE =================
+     Open-Meteo da el pronóstico de los próximos 16 días. Pedimos una sola vez el de todos los pueblos. */
+  RV.fc = null;
+  RV.dayISO = i => { if (!state.date) return ''; const d = new Date(state.date + 'T12:00'); d.setDate(d.getDate() + i); return isoDay(d); };
+  /* el pueblo que manda en el día: el del primer lugar que visitas, o de donde sales */
+  RV.dayZone = i => { const d = state.days[i], p = d.stops.find(id => ALL[id].kind === 'lugar'); return p ? ALL[p].zone : d.stops.length ? ALL[d.stops[0]].zone : RV.startZone(i); };
+  RV.loadForecast = () => {
+    const zs = Object.keys(ZLL);
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + zs.map(z => ZLL[z][0]).join(',') + '&longitude=' + zs.map(z => ZLL[z][1]).join(',') +
+      '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=16&timezone=America%2FBogota';
+    return fetch(url).then(r => { if (!r.ok) throw 0; return r.json(); }).then(data => {
+      const fc = {};
+      (Array.isArray(data) ? data : [data]).forEach((d, k) => { const dl = d.daily; if (!dl) return; fc[zs[k]] = {}; dl.time.forEach((day, j) => fc[zs[k]][day] = {code:dl.weather_code[j], max:dl.temperature_2m_max[j], min:dl.temperature_2m_min[j], rain:dl.precipitation_probability_max[j]}); });
+      RV.fc = fc; return fc;
+    });
+  };
+  /* pronóstico del día i: {code, max, min, rain, zone}, 'far' si aún es muy pronto, o null */
+  RV.dayForecast = i => {
+    const iso = RV.dayISO(i); if (!iso || !RV.fc) return null;
+    const z = RV.dayZone(i), f = RV.fc[z] && RV.fc[z][iso];
+    if (f) return {...f, zone:z};
+    const last = Object.keys(RV.fc[z] || {}).pop();
+    return last && iso > last ? 'far' : null;
+  };
+  RV.forecastChip = i => {
+    const f = RV.dayForecast(i);
+    if (f === 'far') return `<span class="fc far">${t('fc.far')}</span>`;
+    if (!f) return '';
+    return `<span class="fc" title="${esc(t('fc.title', {town:RV.zoneName(f.zone)}))}">${RV.wxIcon(f.code)}${Math.round(f.min)}°–${Math.round(f.max)}°${f.rain != null ? ` <small>· ${f.rain}% ${t('fc.rain')}</small>` : ''}</span>`;
+  };
 
   RV.packList = () => {
     const ids = RV.allStops(), places = ids.filter(id => ALL[id].kind === 'lugar').map(id => ALL[id]);

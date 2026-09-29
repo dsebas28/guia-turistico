@@ -95,6 +95,9 @@ img{display:block;max-width:100%}
   linear-gradient(90deg,rgba(6,17,12,calc(var(--p3) * .8)) 0%,transparent 70%)}
 .hero-logo{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;opacity:calc(1 - var(--p2));transform:scale(calc(1 + var(--p2) * 2.4));will-change:transform,opacity}
 .hl-word{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(88px,21vw,360px);line-height:.82;letter-spacing:.01em;background:var(--grad-v);-webkit-background-clip:text;background-clip:text;color:transparent;animation:glow 5s ease-in-out infinite;padding:.14em .04em 0}
+/* la tilde de la Í de Anton queda muy separada de la letra: dibujamos la nuestra, pegada */
+.hl-word .acc{position:relative;display:inline-block}
+.hl-word .acc::before{content:"";position:absolute;left:50%;top:-.015em;width:.26em;height:.085em;border-radius:.02em;background:#F6D365;transform:translateX(-38%) skewY(-24deg)}
 .hl-over,.hl-under{font-weight:800;font-size:clamp(11px,1.2vw,15px);letter-spacing:.42em;text-transform:uppercase;color:rgba(255,255,255,.85);margin:18px 0}
 .hero-copy{position:relative;z-index:3;width:100%;display:flex;flex-direction:column;gap:22px;padding-top:90px;padding-bottom:60px;opacity:var(--p3);transform:translateY(calc((1 - var(--p3)) * 60px));pointer-events:none}
 .hero-stage.copy-on .hero-copy{pointer-events:auto}
@@ -163,11 +166,24 @@ img{display:block;max-width:100%}
 .rtown{display:flex;align-items:center;gap:8px;white-space:nowrap;transform:translate(-9px,-9px)}
 .rtown i{width:18px;height:18px;border-radius:50%;background:var(--gold);border:3px solid #0A1A10;box-shadow:0 0 0 2px var(--gold),0 0 22px 4px rgba(246,211,101,.6);flex-shrink:0;transition:transform .3s var(--spring)}
 .rtown b{font-family:'Anton';font-weight:400;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 2px 6px #000,0 0 14px rgba(0,0,0,.9)}
+.rtown.l{flex-direction:row-reverse;transform:translate(calc(-100% + 9px),-9px)}
 .rtown:hover i,.rtown.on i{transform:scale(1.3)}
 .rtown.on b{color:var(--gold)}
+.rtown.in i{background:var(--teal);box-shadow:0 0 0 2px var(--teal),0 0 22px 4px rgba(168,224,99,.6)}
 .rplace{width:14px;height:14px;transform:rotate(45deg);border-radius:3px;background:var(--pink);border:2px solid #0A1A10;box-shadow:0 0 14px rgba(232,116,59,.8);transition:transform .3s var(--spring)}
 .rplace:hover{transform:rotate(45deg) scale(1.35)}
 .rplace.in{background:var(--teal);box-shadow:0 0 16px rgba(168,224,99,.9)}
+/* restaurantes y hospedajes con su ubicación exacta */
+.rdot{width:12px;height:12px;border-radius:50%;border:2px solid #0A1A10;transition:transform .3s var(--spring)}
+.rdot:hover{transform:scale(1.4)}
+.rdot.food{background:var(--orange);box-shadow:0 0 10px rgba(242,163,58,.8)}
+.rdot.stay{background:#5CC8FF;box-shadow:0 0 10px rgba(92,200,255,.8)}
+.rdot.in{background:var(--teal);box-shadow:0 0 14px rgba(168,224,99,.9)}
+.rm-layers{display:flex;gap:6px;flex-wrap:wrap}
+.rm-layers button{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:rgba(6,17,12,.78);border:1.5px solid var(--line2);backdrop-filter:blur(12px);font-size:13px;font-weight:800;color:var(--muted);transition:all .3s var(--ease)}
+.rm-layers button i{width:10px;height:10px;border-radius:50%}
+.rm-layers button[aria-pressed="true"]{background:#fff;color:var(--bg);border-color:#fff}
+.rm-left{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .rpop{display:flex;flex-direction:column;gap:8px;width:250px;max-width:66vw}
 .rpop img{width:100%;height:110px;object-fit:cover;border-radius:10px}
 .rpop small{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
@@ -175,6 +191,7 @@ img{display:block;max-width:100%}
 .rpop span{color:var(--muted);font-size:13px;line-height:1.45}
 .rpop .row{display:flex;gap:6px;margin-top:2px}
 .rpop .btn{min-height:36px;padding:0 12px;font-size:12.5px;flex:1}
+.rpop .btn:has(svg:only-child){flex:0 0 40px;padding:0}
 
 /* Leaflet en oscuro */
 .leaflet-container{font-family:'Figtree',sans-serif;background:#08140E !important}
@@ -187,6 +204,9 @@ img{display:block;max-width:100%}
 .leaflet-control-attribution{background:rgba(6,17,12,.7) !important;color:var(--dim) !important;font-size:10.5px}
 .leaflet-control-attribution a{color:var(--muted) !important}
 .leaflet-div-icon{background:none;border:0}
+/* satélite un poco oscurecido para que se lean los marcadores; carreteras suaves encima */
+.sat-tiles{filter:brightness(.62) saturate(1.1) contrast(1.05)}
+.road-tiles{opacity:.55}
 
 /* ============ FILTROS Y TARJETAS ============ */
 .tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
@@ -372,19 +392,29 @@ img{display:block;max-width:100%}
 .legend .lg-note{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--dim);font-weight:700;padding:7px 4px}
 .legend svg{width:16px;height:16px}
 .map-off{padding:40px 20px;text-align:center;color:var(--muted)}
-/* marcadores del mapa del tour */
+.map-off .btn{margin-top:12px}
+/* marcadores del mapa del tour: los colores de día son claros, por eso el texto va oscuro */
 .tpin{position:relative;width:32px;height:32px}
-.tpin span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);border:2.5px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.6)}
-.tpin b{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#fff;font-weight:900;font-size:13px;line-height:1;letter-spacing:-.02em}
-.tpin em{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;font-style:normal;font-family:'Anton';font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 1px 4px #000,0 0 10px rgba(0,0,0,.9);pointer-events:none}
+.tpin.wide{width:40px;margin-left:-5px}
+.tpin span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);border:2.5px solid #0A1A10;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 6px 16px rgba(0,0,0,.6)}
+.tpin b{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#0A1A10;font-weight:900;font-size:13px;line-height:1;letter-spacing:-.02em}
+.tname{display:block;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-family:'Anton';font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 1px 4px #000,0 0 10px rgba(0,0,0,.95);pointer-events:none}
+#tourMap.nolabels .tname{display:none}
 .spin{width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--bg);box-shadow:0 0 0 2px #fff,0 0 18px rgba(255,255,255,.7)}
-.bedpin span{display:flex;width:28px;height:28px;border-radius:9px;align-items:center;justify-content:center;color:#fff;border:2.5px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.6)}
+.bedpin span{position:relative;display:flex;width:28px;height:28px;border-radius:9px;align-items:center;justify-content:center;color:#0A1A10;border:2.5px solid #0A1A10;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 4px 12px rgba(0,0,0,.6)}
 .bedpin svg{width:16px;height:16px}
+.bedpin small{position:absolute;top:-7px;right:-7px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:#fff;color:#0A1A10;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center}
 
 .days{display:flex;flex-direction:column;gap:16px}
 .day{border-radius:26px;background:var(--panel);border:1px solid var(--line);padding:22px;animation:up .6s var(--ease) both}
 .day-h{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
-.day-h .n{width:48px;height:48px;border-radius:14px;color:#fff;font-family:'Anton';font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -10px currentColor}
+.day-h .n{width:48px;height:48px;border-radius:14px;color:#0A1A10;font-family:'Anton';font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px -10px rgba(0,0,0,.6)}
+/* pronóstico del clima para la fecha de ese día */
+.fc{display:inline-flex;align-items:center;gap:6px;padding:4px 12px 4px 6px;border-radius:999px;background:var(--panel2);font-size:13px;font-weight:800;color:var(--text)}
+.fc .wx{width:28px;height:28px}
+.fc small{font-weight:700;color:var(--muted);margin:0}
+.fc.far{padding:6px 12px;font-weight:700;color:var(--dim)}
+.travel .km{color:var(--dim);font-weight:600}
 .day-h h4{font-family:'Anton';font-weight:400;font-size:28px;text-transform:uppercase;line-height:1}
 .day-h small{display:block;color:var(--muted);font-weight:600;margin-top:3px}
 .day-h .load{margin-left:auto;font-size:13px;font-weight:800;padding:6px 12px;border-radius:999px;background:var(--panel2);color:var(--muted)}
@@ -523,21 +553,3 @@ footer::before{content:"";position:absolute;left:50%;top:-40%;width:120%;height:
   .hero-ph{opacity:1;transform:none}
   .hero-copy{opacity:1;transform:none;pointer-events:auto}
 }
-.rtown.in i{background:var(--teal);box-shadow:0 0 0 2px var(--teal),0 0 22px 4px rgba(168,224,99,.6)}
-.rpop .btn:has(svg:only-child){flex:0 0 40px;padding:0}
-.rtown.l{flex-direction:row-reverse;transform:translate(calc(-100% + 9px),-9px)}
-#tourMap.nolabels .tpin em{display:none}
-.sat-tiles{filter:brightness(.62) saturate(1.1) contrast(1.05)}
-.road-tiles{opacity:.55}
-
-/* mapa del tour: nombres únicos por pueblo y cama con número de noches */
-.tpin.wide{width:40px;margin-left:-5px}
-.tname{display:block;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-family:'Anton';font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 1px 4px #000,0 0 10px rgba(0,0,0,.95);pointer-events:none}
-#tourMap.nolabels .tname{display:none}
-.bedpin span{position:relative}
-.bedpin small{position:absolute;top:-7px;right:-7px;min-width:16px;height:16px;padding:0 3px;border-radius:8px;background:#fff;color:#0A1A10;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center}
-.map-off .btn{margin-top:12px}
-/* colores de día claros: números oscuros */
-.day-h .n,.tpin b,.bedpin span{color:#0A1A10 !important}
-.tpin span{border-color:#0A1A10;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 6px 16px rgba(0,0,0,.6)}
-.bedpin span{border-color:#0A1A10;box-shadow:0 0 0 2px rgba(255,255,255,.85),0 4px 12px rgba(0,0,0,.6)}

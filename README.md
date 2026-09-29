@@ -2,12 +2,14 @@
 
 Guía turística **gratuita** del Eje Cafetero (Quindío, Colombia). Eliges los lugares que quieres ver, dónde comer y dónde dormir, y la página arma tu recorrido por días, con horarios, mapa y cómo llegar. Al final te llevas la guía en PDF o la compartes con un enlace.
 
+**Página publicada:** https://dsebas28.github.io/guia-turistico/
+
 Funciona en español e inglés. El diseño es oscuro y cinematográfico: fotos a pantalla completa, colores del Eje Cafetero (verde, dorado y naranja café) y títulos grandes.
 
 ## Qué tiene la página
 
 - **Portada animada**: al bajar, la palabra QUINDÍO crece y se desvanece y se abre la foto del Valle del Cocora.
-- **El mapa**: los 12 pueblos y todos los lugares en un mapa satelital. Tocas un pueblo para ver su guía o un lugar para agregarlo a tu tour.
+- **El mapa**: los 12 pueblos y todos los lugares en un mapa satelital. Tocas un pueblo para ver su guía o un lugar para agregarlo a tu tour. Con los botones "Dónde comer" y "Dónde dormir" aparecen los restaurantes y hospedajes de los que tenemos la ubicación exacta.
 - **Tours sugeridos**: un clic carga un tour completo (lugares, restaurantes y hospedaje por noche) que luego puedes cambiar.
 - **Lugares**: tarjetas con cómo llegar, cuánto tiempo necesitas, consejos y el **clima en vivo**.
 - **Dónde comer** y **dónde dormir**: restaurantes y hospedajes reales del Quindío. No hay precios, solo recomendaciones.
@@ -15,65 +17,67 @@ Funciona en español e inglés. El diseño es oscuro y cinematográfico: fotos a
 - **Postales**: galería de fotos que se abren en grande.
 - **Cuándo ir**: calendario de temporadas y fiestas.
 - **Cómo moverse**: rutas y tarifas de transporte entre pueblos.
-- **Tu tour**: el recorrido organizado por días, con un mapa que numera las paradas en orden, marca dónde duermes cada noche y deja ver un día a la vez.
+- **Tu tour**: el recorrido organizado por días. El mapa sigue las carreteras reales, numera las paradas en orden, marca dónde duermes y deja ver un día a la vez. Cada traslado dice los kilómetros por carretera, y si el viaje es en los próximos 16 días, cada día muestra el pronóstico del clima.
 - **Llevarte la guía**: copiar el texto, imprimir, descargar en PDF o compartir un enlace que abre el mismo tour en otro celular.
+- **Sin internet**: la página publicada se guarda en el teléfono la primera vez que se abre. En el Cocora o en Pijao, sin señal, la guía y tu tour siguen abriendo.
 
 Tu tour se guarda en el navegador: si cierras la página y vuelves, sigue ahí.
 
 ## Cómo verla en tu computador
 
-No necesita instalar nada. Abre `index.html` con doble clic en el navegador.
+No necesita instalar nada. Abre `index.html` con doble clic en el navegador. Los mapas, el clima y el PDF funcionan así.
 
-Si el clima o el mapa no cargan al abrir el archivo directamente, sírvela con un servidor local desde la carpeta del proyecto:
+El modo sin internet solo funciona con la página publicada (o servida con un servidor local), porque el navegador no lo permite en archivos abiertos con doble clic:
 
 ```bash
 python -m http.server 8000
 ```
 
-Y entra a http://localhost:8000
-
-Para verla en inglés: http://localhost:8000/?lang=en
+Y entra a http://localhost:8000 (en inglés: http://localhost:8000/?lang=en).
 
 ## Archivos del proyecto
 
 | Archivo | Para qué sirve |
 |---|---|
 | `index.html` | La página. Carga todos los demás archivos. |
-| `styles.css` | Colores, letras y diseño. |
+| `styles.css` | Colores, letras y diseño, ordenado por secciones. |
 | `data.js` | Fotos, los primeros 7 pueblos, lugares, restaurantes, hospedajes y tours sugeridos. |
-| `data2.js` | Los 5 pueblos nuevos, más lugares, calendario, tarifas de transporte y coordenadas. |
+| `data2.js` | Los 5 pueblos nuevos, más lugares, calendario, tarifas de transporte y coordenadas de los pueblos. |
+| `geo.js` | Ubicación exacta de los restaurantes y hospedajes que la tienen. |
+| `routes.js` | Rutas por carretera entre pueblos: kilómetros, tiempo y trazado. |
 | `i18n.js` | Textos de botones y títulos en español e inglés. |
 | `en.js`, `en2.js` | Traducción al inglés del contenido de `data.js` y `data2.js`. |
-| `core.js` | El núcleo: idioma, fotos, guardado del tour, enlace para compartir, rutas y horarios. |
-| `ui.js` | Lo que se ve en pantalla: portada animada, tarjetas, filtros, pueblos, postales, armado del tour, los dos mapas y el clima. |
+| `core.js` | El núcleo: idioma, fotos, guardado del tour, enlace para compartir, horarios, traslados y pronóstico. |
+| `maps.js` | Los dos mapas: el de la región y el de tu tour. |
+| `ui.js` | Lo demás que se ve en pantalla: portada animada, tarjetas, filtros, pueblos, postales y armado del tour. |
 | `pdf.js` | Copiar, imprimir y descargar el tour en PDF. |
-| `img/` | Fotos. Cada una viene en dos tamaños: `-s` (pequeña) y `-l` (grande). |
-| `robots.txt` | Permite que Google indexe la página. |
-| `PUBLICAR.md` | Paso a paso para publicar la página gratis. |
+| `sw.js` | Guarda la página en el teléfono para usarla sin internet. |
+| `manifest.webmanifest` | Nombre e ícono si alguien instala la página en su celular. |
+| `img/` | Fotos en formato WebP, cada una en dos tamaños: `-s` (pequeña) y `-l` (grande). También `og.jpg` (la imagen al compartir en redes) y los íconos. |
+| `robots.txt`, `sitemap.xml` | Para que Google encuentre la página. |
+| `PUBLICAR.md` | Cómo publicar, actualizar y aparecer en Google. |
 
-Los archivos `.js` se cargan en este orden y el orden importa: `data.js`, `data2.js`, `i18n.js`, `en.js`, `en2.js`, `core.js`, `ui.js`, `pdf.js`.
+Los archivos `.js` se cargan en este orden y el orden importa: `data.js`, `data2.js`, `geo.js`, `routes.js`, `i18n.js`, `en.js`, `en2.js`, `core.js`, `maps.js`, `ui.js`, `pdf.js`.
 
 ## Cómo actualizar la guía
 
 - Para agregar o cambiar un restaurante u hospedaje de los primeros 7 pueblos, edita `data.js`.
 - Para los pueblos nuevos, el calendario o las tarifas de transporte, edita `data2.js`.
+- Para poner un restaurante u hospedaje en su sitio exacto del mapa, agrégalo en `geo.js`.
 - Si agregas algo en español, agrega su traducción en `en2.js` con el mismo `id`. Si falta la traducción, la página muestra el texto en español.
 - Para cambiar un botón o un título, edita `i18n.js` en los dos idiomas.
-
-## Publicarla
-
-La página son archivos sueltos: no necesita servidor ni base de datos. Se puede publicar gratis en Netlify o GitHub Pages. El paso a paso, incluido cómo aparecer en Google, está en [PUBLICAR.md](PUBLICAR.md).
+- Después de cualquier cambio, sube el número de versión como explica [PUBLICAR.md](PUBLICAR.md).
 
 ## Servicios externos
 
 La página usa estos servicios gratuitos. Todos cargan solo cuando se necesitan:
 
-- [Open-Meteo](https://open-meteo.com/): clima en vivo de cada lugar.
-- [Leaflet](https://leafletjs.com/) con la vista satelital y las vías de [Esri](https://www.esri.com/): el mapa de la región y el de tu tour. Funciona aunque abras la página con doble clic.
+- [Open-Meteo](https://open-meteo.com/): clima en vivo de cada lugar y pronóstico de los días del viaje.
+- [Leaflet](https://leafletjs.com/) con la vista satelital y las vías de [Esri](https://www.esri.com/): los dos mapas. Funciona aunque abras la página con doble clic.
 - [Google Fonts](https://fonts.google.com/): letras Anton y Figtree.
 - [jsPDF](https://github.com/parallax/jsPDF): crear el PDF.
 
-Si no hay internet, la guía sigue funcionando, pero sin clima, mapa ni PDF.
+Las rutas por carretera (con [OSRM](https://project-osrm.org/)) y las ubicaciones exactas (con [Nominatim](https://nominatim.org/)) se calcularon una sola vez sobre datos de [OpenStreetMap](https://www.openstreetmap.org/copyright) y quedaron guardadas en `routes.js` y `geo.js`. La página no los consulta.
 
 ## Créditos de las fotos
 
