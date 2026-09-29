@@ -18,6 +18,7 @@
     up:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>',
     down:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
     x:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    cam:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
     arr:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
   };
   const PRESET_ICONS = [
@@ -49,19 +50,20 @@
   const F = {place:'todos', q:'', foodTown:'todos', foodSlot:'todos', stayTown:'todos', stayFam:'todos'};
   const short = s => s.length > 115 ? s.slice(0, 112).replace(/\s\S*$/,'') + '…' : s;
   function card(it){
-    const on = RV.inTour(it.id), k = RV.mainPh(it);
+    const on = RV.inTour(it.id), k = RV.mainPh(it), nph = RV.photos(it).length;
     let typ, chip, where, meta, note = '';
     if (it.kind === 'lugar'){ typ = L(it,'town'); chip = `<span class="tchip">${RV.wxIcon(it.wx.code)}${Math.round(it.wx.t)}°</span>`; where = L(it,'tag'); meta = `<span>${dur(it.dur)}</span><span>${it.alt}</span>`; if (it.phNote) note = `<span class="fnote">${t('note.photoIllus')}</span>`; }
     else if (it.kind === 'comida'){ typ = RV.slot(it.slot); chip = `<span class="tchip txt">${zn(it.zone)}</span>`; where = L(it,'dish'); meta = `<span>${dur(it.dur)}</span><span>${RV.slot(it.slot)}</span>`; note = `<span class="fnote">${t('note.photoDish')}</span>`; }
     else { typ = RV.type(it.type); chip = `<span class="tchip txt">${zn(it.zone)}</span>`; where = t('stay.in', {town:zn(it.zone)}); meta = L(it,'good').map(g => `<span>${esc(g)}</span>`).join(''); note = `<span class="fnote">${t('note.photoTown')}</span>`; }
+    if (RV.isReal(k, it)) note = '';
     const addTxt = it.kind === 'hospedaje' ? (on ? ICON.check + ' ' + t('btn.chosen') : ICON.plus + ' ' + t('btn.sleepHere')) : (on ? ICON.check + ' ' + t('btn.inTour') : ICON.plus + ' ' + t('btn.add'));
     return `<article class="card ${on?'added':''}" data-id="${it.id}">
       <div class="art" data-open="${it.id}" role="button" tabindex="0" aria-label="${esc(t('aria.details', {name:it.name}))}">${pic(k, false, PHOTOS[k].t)}
-        <span class="typ">${esc(typ)}</span>${chip}<span class="check">${ICON.check}</span></div>
+        <span class="typ">${esc(typ)}</span>${chip}<span class="check">${ICON.check}</span>${RV.isReal(k, it) ? `<span class="real">${t('note.photoRealShort')}</span>` : ''}${nph > 1 ? `<span class="phc">${ICON.cam}${nph}</span>` : ''}</div>
       <div class="body"><h3>${esc(it.name)}</h3><span class="where">${esc(where)}</span>
         <p>${esc(short(L(it,'desc')))}</p>
         <div class="meta">${meta}</div>${note}
-        <div class="acts"><button type="button" class="btn ${on?'lime':''}" data-toggle="${it.id}">${addTxt}</button><button type="button" class="btn ghost" data-open="${it.id}" style="flex:0 0 auto;padding:0 14px">${t('btn.view')}</button><a class="btn ghost icon" href="${RV.mapsUrl(it)}" target="_blank" rel="noopener" aria-label="${esc(t('btn.directions'))}: ${esc(it.name)}" title="${esc(t('btn.directions'))}">${ICON.nav}</a></div>
+        <div class="acts"><button type="button" class="btn ${on?'lime':''}" data-toggle="${it.id}">${addTxt}</button><button type="button" class="btn ghost" data-open="${it.id}" style="flex:0 0 auto;padding:0 14px">${t('btn.view')}</button><a class="btn ghost icon" href="${RV.dirUrl(it)}" target="_blank" rel="noopener" aria-label="${esc(t('btn.directions'))}: ${esc(it.name)}" title="${esc(t('btn.directions'))}">${ICON.nav}</a></div>
       </div></article>`;
   }
   const inTown = (zone, tw) => tw === 'todos' || ZONE_TOWN[zone] === tw;
@@ -204,7 +206,7 @@
             <div style="min-width:0"><b>${esc(it.name)}</b><div class="sub"><span class="tg ${it.kind==='lugar'?'l':'c'}">${it.kind==='lugar' ? t('tag.place') : RV.slot(it.slot).toUpperCase()}</span>${zn(it.zone)}</div></div>
             <div class="ctr"><button type="button" class="ic-btn" data-up="${s.id}" aria-label="${t('aria.up')}" ${j===0?'disabled':''}>${ICON.up}</button><button type="button" class="ic-btn" data-down="${s.id}" aria-label="${t('aria.down')}" ${j===sch.length-1?'disabled':''}>${ICON.down}</button>
               ${state.days.length > 1 ? `<select class="mv" data-mv="${s.id}" aria-label="${t('aria.moveDay')}">${opts(i)}</select>` : ''}
-              <a class="ic-btn" href="${RV.mapsUrl(it)}" target="_blank" rel="noopener" aria-label="${esc(t('btn.directions'))}">${ICON.nav}</a><button type="button" class="ic-btn" data-open="${s.id}" aria-label="${t('aria.info')}">${ICON.pin}</button><button type="button" class="ic-btn del" data-del="${s.id}" aria-label="${t('aria.remove')}">${ICON.x}</button></div></div>`; }).join('') : `<div class="day-empty">${t('day.emptyHint')}</div>`}</div>
+              <a class="ic-btn" href="${RV.dirUrl(it)}" target="_blank" rel="noopener" aria-label="${esc(t('btn.directions'))}">${ICON.nav}</a><button type="button" class="ic-btn" data-open="${s.id}" aria-label="${t('aria.info')}">${ICON.pin}</button><button type="button" class="ic-btn del" data-del="${s.id}" aria-label="${t('aria.remove')}">${ICON.x}</button></div></div>`; }).join('') : `<div class="day-empty">${t('day.emptyHint')}</div>`}</div>
         ${nightHTML(d, i)}</div>`;
     }).join('') + `<div class="pack"><h4>${t('pack.title')}</h4><div class="l">${RV.packList().map(x => `<span>${esc(x)}</span>`).join('')}</div></div>`;
     $$('[data-up]').forEach(b => b.onclick = () => move(b.dataset.up, -1));
@@ -218,22 +220,29 @@
 
   /* ================= POSTALES ================= */
   const GAL = [['cocora2','w h'],['salento3',''],['filandia7',''],['cafetal2','h'],['pijao3',''],['buenavista2','w'],['cocora7',''],['filandia9',''],['palmsSign','h'],['salento5','w'],['cafeGranos',''],['calarcaVista','w'],['tebaida2','w'],['filandia5','w']].filter(([k]) => PHOTOS[k]);
-  let gi = 0;
   function renderGallery(){
     $('#gallery').innerHTML = GAL.map(([k,c], i) => `<button type="button" class="${c}" data-gal="${i}" data-cap="${esc(PHOTOS[k].t)}" aria-label="${esc(PHOTOS[k].t)}">${pic(k, c.includes('w') || c.includes('h'), PHOTOS[k].t)}</button>`).join('');
   }
+  /* visor de fotos: sirve para Postales y para la galería de cada lugar, restaurante u hotel */
+  let lbList = [], gi = 0, lbFocus = null;
   function showPhoto(i){
-    gi = (i + GAL.length) % GAL.length; const k = GAL[gi][0];
+    gi = (i + lbList.length) % lbList.length; const k = lbList[gi];
     $('#lbImg').src = RV.pSrc(k, true); $('#lbImg').dataset.k = k; $('#lbImg').dataset.w = 1600; delete $('#lbImg').dataset.fb; $('#lbImg').alt = PHOTOS[k].t;
-    $('#lbCap').innerHTML = `<b>${esc(PHOTOS[k].t)}</b>${RV.credit(k)}`;
+    $('#lbCap').innerHTML = `<b>${esc(PHOTOS[k].t)}</b>${RV.credit(k)}${lbList.length > 1 ? ` · ${gi + 1}/${lbList.length}` : ''}`;
+    $('#lbPrev').hidden = $('#lbNext').hidden = lbList.length < 2;
   }
-  let lbFocus = null;
-  function openLb(i){ lbFocus = document.activeElement; showPhoto(i); $('#lightbox').hidden = false; document.body.style.overflow = 'hidden'; $('#lbClose').focus(); }
-  function closeLb(){ $('#lightbox').hidden = true; document.body.style.overflow = ''; if (lbFocus) lbFocus.focus({preventScroll:true}); }
-  $('#gallery').addEventListener('click', e => { const b = e.target.closest('[data-gal]'); if (b) openLb(+b.dataset.gal); });
+  function openLb(list, i){ lbList = list; lbFocus = document.activeElement; showPhoto(i); $('#lightbox').hidden = false; document.body.style.overflow = 'hidden'; $('#lbClose').focus(); }
+  RV.openPhotos = openLb;
+  function closeLb(){ $('#lightbox').hidden = true; document.body.style.overflow = $('#drawer').classList.contains('open') ? 'hidden' : ''; if (lbFocus) lbFocus.focus({preventScroll:true}); }
+  $('#gallery').addEventListener('click', e => { const b = e.target.closest('[data-gal]'); if (b) openLb(GAL.map(g => g[0]), +b.dataset.gal); });
   $('#lbClose').onclick = closeLb; $('#lbPrev').onclick = () => showPhoto(gi - 1); $('#lbNext').onclick = () => showPhoto(gi + 1);
   $('#lightbox').addEventListener('click', e => { if (e.target.id === 'lightbox') closeLb(); });
-  addEventListener('keydown', e => { if ($('#lightbox').hidden) return; if (e.key === 'Escape') closeLb(); if (e.key === 'ArrowRight') showPhoto(gi + 1); if (e.key === 'ArrowLeft') showPhoto(gi - 1); });
+  /* en fase de captura: si el visor está abierto, Escape lo cierra solo a él y no también el panel de detalle */
+  addEventListener('keydown', e => { if ($('#lightbox').hidden) return; if (e.key === 'Escape'){ e.stopImmediatePropagation(); closeLb(); } if (e.key === 'ArrowRight') showPhoto(gi + 1); if (e.key === 'ArrowLeft') showPhoto(gi - 1); }, true);
+  /* deslizar con el dedo en el visor */
+  let tx = null;
+  $('#lightbox').addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+  $('#lightbox').addEventListener('touchend', e => { if (tx == null || lbList.length < 2) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) showPhoto(gi + (dx < 0 ? 1 : -1)); tx = null; });
 
   /* ================= DRAWER ================= */
   let lastFocus = null;
@@ -263,14 +272,31 @@
         <div>${ICON.star}<p><b>${t('d.tip')}</b><span>${esc(L(it,'tips'))} ${t('d.confirm')}</span></p></div>`;
     }
     const lbl = o => it.kind === 'hospedaje' ? (o ? t('btn.removeNight') : t('btn.sleepHere')) : (o ? t('btn.removeTour') : t('btn.addTour'));
-    const photoNote = it.kind === 'hospedaje' ? ' · ' + t('note.photoTown') : it.kind === 'comida' ? ' · ' + t('note.photoDish') : it.phNote ? ' · ' + t('note.photoIllus') : '';
-    const links = `<div class="d-links"><a class="btn ghost sm" href="${RV.mapsUrl(it)}" target="_blank" rel="noopener">${ICON.nav} ${t('btn.directions')}</a>${it.kind !== 'lugar' ? `<a class="btn ghost sm" href="${RV.webUrl(it)}" target="_blank" rel="noopener">${ICON.web} ${t('btn.contact')}</a>` : ''}</div>${it.kind !== 'lugar' ? `<p class="fnote">${t('d.contactNote')}</p>` : ''}`;
-    $('#drawer').innerHTML = `<div class="d-art">${pic(k, true, PHOTOS[k].t, true)}<span class="d-cred">${esc(PHOTOS[k].t)} · ${RV.credit(k)}${photoNote}</span><button type="button" class="d-close" id="dClose" aria-label="${t('aria.close')}">${ICON.x}</button></div>
+    /* galería: todas las fotos del sitio; la nota dice si la foto es del propio sitio o ilustrativa */
+    const phs = RV.photos(it);
+    const photoNote = p => RV.isReal(p, it) ? ' · ' + t('note.photoReal') : it.kind === 'hospedaje' ? ' · ' + t('note.photoTown') : it.kind === 'comida' ? ' · ' + t('note.photoDish') : it.phNote && p === phs[0] ? ' · ' + t('note.photoIllus') : '';
+    const cred = p => `${esc(PHOTOS[p].t)} · ${RV.credit(p)}${photoNote(p)}${phs.length > 1 ? ` · ${phs.indexOf(p) + 1}/${phs.length}` : ''}`;
+    const links = `<div class="d-links"><a class="btn ghost sm" href="${RV.dirUrl(it)}" target="_blank" rel="noopener">${ICON.nav} ${t('btn.directions')}</a><a class="btn ghost sm" href="${RV.mapsUrl(it)}" target="_blank" rel="noopener">${ICON.cam} ${t('btn.realPhotos')}</a>${it.kind !== 'lugar' ? `<a class="btn ghost sm" href="${RV.webUrl(it)}" target="_blank" rel="noopener">${ICON.web} ${t('btn.contact')}</a>` : ''}</div>${it.kind !== 'lugar' ? `<p class="fnote">${t('d.contactNote')}</p>` : ''}`;
+    $('#drawer').innerHTML = `<div class="d-art"><button type="button" class="d-main" id="dMain" aria-label="${esc(t('aria.bigPhoto'))}">${pic(k, true, PHOTOS[k].t, true)}</button><span class="d-cred" id="dCred">${cred(k)}</span><button type="button" class="d-close" id="dClose" aria-label="${t('aria.close')}">${ICON.x}</button></div>
+      ${phs.length > 1 ? `<div class="d-thumbs" role="list">${phs.map((p, i) => `<button type="button" role="listitem" data-dph="${i}" class="${i ? '' : 'on'}" aria-label="${esc(PHOTOS[p].t)}">${pic(p, false, '')}${RV.isReal(p, it) ? '<i></i>' : ''}</button>`).join('')}</div>` : ''}
       <div class="d-in">${head}<p>${esc(L(it,'desc'))}</p>${extra}${links}<div class="info">${info}</div></div>
       <div class="d-foot"><button type="button" class="btn ${on?'ghost':'clay'}" id="dToggle">${lbl(on)}</button>${it.kind === 'hospedaje' && state.days.length > 1 ? `<button type="button" class="btn lite" id="dAll" style="border:1.5px solid var(--line)">${t('btn.allNights')}</button>` : ''}<a class="btn lime" href="#mi-tour" id="dGo">${t('btn.seeTour')}</a></div>`;
     $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); $('#drawer').scrollTop = 0;
     setTimeout(() => $('#dClose').focus(), 60);
     $('#dClose').onclick = closeDrawer;
+    let cur = 0;
+    const setPh = i => {
+      cur = i; const p = phs[i], im = $('#dMain img');
+      im.src = RV.pSrc(p, true); im.dataset.k = p; delete im.dataset.fb; im.alt = PHOTOS[p].t;
+      $('#dCred').innerHTML = cred(p);
+      $$('[data-dph]').forEach(b => b.classList.toggle('on', +b.dataset.dph === i));
+    };
+    $$('[data-dph]').forEach(b => b.onclick = () => setPh(+b.dataset.dph));
+    /* en el celular: deslizar la foto grande cambia de foto; tocarla la abre en pantalla completa */
+    let sx = null, swiped = false;
+    $('#dMain').addEventListener('touchstart', e => { sx = e.touches[0].clientX; swiped = false; }, {passive:true});
+    $('#dMain').addEventListener('touchend', e => { if (sx == null || phs.length < 2) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50){ swiped = true; setPh((cur + (dx < 0 ? 1 : -1) + phs.length) % phs.length); } sx = null; });
+    $('#dMain').onclick = () => { if (swiped){ swiped = false; return; } RV.openPhotos(phs, cur); };
     $('#dToggle').onclick = () => { toggle(id); const now = RV.inTour(id); $('#dToggle').className = 'btn ' + (now ? 'ghost' : 'clay'); $('#dToggle').textContent = lbl(now); };
     if ($('#dAll')) $('#dAll').onclick = () => { stayAll(id); $('#dToggle').className = 'btn ghost'; $('#dToggle').textContent = lbl(true); };
     $('#dGo').onclick = e => { e.preventDefault(); closeDrawer(); goTo('#mi-tour'); };

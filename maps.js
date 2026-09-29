@@ -178,9 +178,16 @@
     const kicker = it.kind === 'lugar' ? zn(it.zone) : it.kind === 'comida' ? `${RV.slot(it.slot)} · ${zn(it.zone)}` : `${RV.type(it.type)} · ${zn(it.zone)}`;
     const sub = it.kind === 'lugar' ? L(it,'tag') : it.kind === 'comida' ? L(it,'dish') : L(it,'good').join(' · ');
     const add = it.kind === 'hospedaje' ? (on ? t('btn.chosen') : t('btn.sleepHere')) : (on ? t('btn.inTour') : t('btn.add'));
-    return `<div class="rpop">${pic(k, false, PHOTOS[k].t)}<small>${esc(kicker)}</small><b>${esc(it.name)}</b><span>${esc(sub)}</span>
-      <div class="row"><button type="button" class="btn ${on ? 'lime' : ''}" data-toggle="${it.id}">${on ? ICON().check : ICON().plus} ${add}</button><button type="button" class="btn ghost" data-open="${it.id}">${t('btn.view')}</button></div></div>`;
+    return `<div class="rpop">${photoBtn(it)}<small>${esc(kicker)}</small><b>${esc(it.name)}</b><span>${esc(sub)}</span>
+      <div class="row"><button type="button" class="btn ${on ? 'lime' : ''}" data-toggle="${it.id}">${on ? ICON().check : ICON().plus} ${add}</button><button type="button" class="btn ghost" data-open="${it.id}">${t('btn.view')}</button></div>
+      <a class="dir" href="${RV.dirUrl(it)}" target="_blank" rel="noopener">${t('btn.directions')} →</a></div>`;
   }
+  /* foto del globo: al tocarla se abren todas las fotos del sitio en grande */
+  function photoBtn(it){
+    const phs = RV.photos(it), k = phs[0];
+    return `<button type="button" class="rph" data-photos="${it.id}" aria-label="${esc(t('aria.bigPhoto'))}">${pic(k, false, PHOTOS[k].t)}${RV.isReal(k, it) ? `<em class="real">${t('note.photoRealShort')}</em>` : ''}${phs.length > 1 ? `<em>${ICON().cam}${phs.length}</em>` : ''}</button>`;
+  }
+  document.addEventListener('click', e => { const b = e.target.closest('[data-photos]'); if (b && ALL[b.dataset.photos]) RV.openPhotos(RV.photos(ALL[b.dataset.photos]), 0); });
   function buildRegion(){
     if (!rmap) return;
     const Lf = window.L, cur = RV.curTown ? RV.curTown() : null;
@@ -189,12 +196,13 @@
       const tw = TOWNS[id], to = townObj(id);
       const m = Lf.marker(townLL(id), {icon:Lf.divIcon({className:'', html:`<div class="rtown ${LEFT.includes(id) ? 'l' : ''} ${id === cur ? 'on' : ''}"><i></i><b>${tw.name}</b></div>`, iconSize:[0,0], iconAnchor:[0,0]}), zIndexOffset:1000, riseOnHover:true, keyboard:true, title:tw.name}).addTo(rlayer);
       m.bindPopup(() => { const pl = ALL[id] && ALL[id].kind === 'lugar' ? ALL[id] : null, on = pl && RV.inTour(id);
-        return `<div class="rpop">${pic(tw.ph, false, PHOTOS[tw.ph].t)}<small>${t('nav.towns')}</small><b>${tw.name}</b><span>${esc(L(to,'tag'))}</span><div class="row"><button type="button" class="btn" data-town="${id}" data-scroll="1">${t('rmap.seeTown')}</button>${pl ? `<button type="button" class="btn ${on ? 'lime' : 'ghost'}" data-toggle="${id}" aria-label="${esc(on ? t('btn.inTour') : t('btn.add'))}">${on ? ICON().check : ICON().plus}</button>` : ''}</div></div>`; }, {minWidth:250, maxWidth:280});
+        return `<div class="rpop">${pl ? photoBtn(pl) : pic(tw.ph, false, PHOTOS[tw.ph].t)}<small>${t('nav.towns')}</small><b>${tw.name}</b><span>${esc(L(to,'tag'))}</span><div class="row"><button type="button" class="btn" data-town="${id}" data-scroll="1">${t('rmap.seeTown')}</button>${pl ? `<button type="button" class="btn only-ic ${on ? 'lime' : 'ghost'}" data-toggle="${id}" aria-label="${esc(on ? t('btn.inTour') : t('btn.add'))}">${on ? ICON().check : ICON().plus}</button>` : ''}</div></div>`; }, {minWidth:250, maxWidth:280});
       rtowns[id] = m;
     });
     PLACES.forEach(p => {
       if (RV.townIds.includes(p.id)) return; /* el pueblo ya tiene su marcador */
-      const m = Lf.marker([p.lat, p.lon], {icon:Lf.divIcon({className:'', html:'<div class="rplace"></div>', iconSize:[14,14], iconAnchor:[7,7]}), riseOnHover:true, title:p.name}).addTo(rlayer);
+      const sz = innerWidth < 640 ? 36 : 46;
+      const m = Lf.marker([p.lat, p.lon], {icon:Lf.divIcon({className:'', html:`<div class="rplace"><img src="${RV.pSrc(RV.mainPh(ALL[p.id]), false)}" alt="" loading="lazy"></div>`, iconSize:[sz,sz], iconAnchor:[sz/2,sz/2]}), riseOnHover:true, zIndexOffset:500, title:p.name}).addTo(rlayer);
       m.bindPopup(() => itemPop(ALL[p.id]), {minWidth:250, maxWidth:280});
       rplaces[p.id] = m;
     });

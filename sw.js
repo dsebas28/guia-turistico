@@ -5,11 +5,11 @@
    sin señal, la guía y su tour siguen abriendo.
    Cuando cambies algún archivo de la página, sube el número de VERSION para que se actualice.
    ============================================================ */
-const VERSION = 'rv-7';
+const VERSION = 'rv-8';
 const CORE = [
-  './', 'index.html', 'styles.css?v=6', 'manifest.webmanifest',
-  'data.js?v=6', 'data2.js?v=6', 'geo.js?v=6', 'routes.js?v=6', 'i18n.js?v=6', 'en.js?v=6', 'en2.js?v=6',
-  'core.js?v=6', 'maps.js?v=6', 'ui.js?v=6', 'pdf.js?v=6',
+  './', 'index.html', 'styles.css?v=7', 'manifest.webmanifest',
+  'data.js?v=7', 'data2.js?v=7', 'photos2.js?v=7', 'geo.js?v=7', 'routes.js?v=7', 'i18n.js?v=7', 'en.js?v=7', 'en2.js?v=7',
+  'core.js?v=7', 'maps.js?v=7', 'ui.js?v=7', 'pdf.js?v=7',
   'img/heroCocora-l.webp', 'img/icon-192.png'
 ];
 const LIBS = [
@@ -18,7 +18,7 @@ const LIBS = [
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
 ];
 /* fotos pequeñas de todas las tarjetas: unos 2 MB, se guardan para verlas sin señal */
-const THUMBS = ['img/aborrajado-s.webp', 'img/aguapanela-s.webp', 'img/ajiaco-s.webp', 'img/almuerzo1-s.webp', 'img/almuerzo2-s.webp', 'img/almuerzo3-s.webp', 'img/arepa-s.webp', 'img/armenia-s.webp', 'img/bahareque-s.webp', 'img/bandeja-s.webp', 'img/buenavista-s.webp', 'img/buenavista2-s.webp', 'img/cafeGranos-s.webp', 'img/cafeLeche-s.webp', 'img/cafetal-s.webp', 'img/cafetal2-s.webp', 'img/calarca-s.webp', 'img/calarca2-s.webp', 'img/calarcaVista-s.webp', 'img/calentado-s.webp', 'img/casaTipica-s.webp', 'img/chorizo-s.webp', 'img/chuleta-s.webp', 'img/circasia-s.webp', 'img/cocora-s.webp', 'img/cocora2-s.webp', 'img/cocora3-s.webp', 'img/cocora4-s.webp', 'img/cocora5-s.webp', 'img/cocora6-s.webp', 'img/cocora7-s.webp', 'img/comida1-s.webp', 'img/comida2-s.webp', 'img/cordoba-s.webp', 'img/croquetas-s.webp', 'img/empanada-s.webp', 'img/filandia-s.webp', 'img/filandia2-s.webp', 'img/filandia3-s.webp', 'img/filandia4-s.webp', 'img/filandia5-s.webp', 'img/filandia6-s.webp', 'img/filandia7-s.webp', 'img/filandia8-s.webp', 'img/filandia9-s.webp', 'img/genova-s.webp', 'img/hamburguesa-s.webp', 'img/heroCocora-s.webp', 'img/jardin-s.webp', 'img/jardin2-s.webp', 'img/mariposario-s.webp', 'img/montenegro-s.webp', 'img/museo-s.webp', 'img/palma-s.webp', 'img/palmsSign-s.webp', 'img/parque-s.webp', 'img/parque2-s.webp', 'img/parque3-s.webp', 'img/pijao-s.webp', 'img/pijao2-s.webp', 'img/pijao3-s.webp', 'img/quimbaya-s.webp', 'img/quindio-s.webp', 'img/salento-s.webp', 'img/salento2-s.webp', 'img/salento3-s.webp', 'img/salento4-s.webp', 'img/salento5-s.webp', 'img/sancocho-s.webp', 'img/tebaida-s.webp', 'img/tebaida2-s.webp', 'img/trucha-s.webp'];
+const THUMBS = ['img/csalento5-s.webp', 'img/aborrajado-s.webp', 'img/aguapanela-s.webp', 'img/ajiaco-s.webp', 'img/almuerzo1-s.webp', 'img/almuerzo2-s.webp', 'img/almuerzo3-s.webp', 'img/arepa-s.webp', 'img/armenia-s.webp', 'img/bahareque-s.webp', 'img/bandeja-s.webp', 'img/buenavista-s.webp', 'img/buenavista2-s.webp', 'img/cafeGranos-s.webp', 'img/cafeLeche-s.webp', 'img/cafetal-s.webp', 'img/cafetal2-s.webp', 'img/calarca-s.webp', 'img/calarca2-s.webp', 'img/calarcaVista-s.webp', 'img/calentado-s.webp', 'img/casaTipica-s.webp', 'img/chorizo-s.webp', 'img/chuleta-s.webp', 'img/circasia-s.webp', 'img/cocora-s.webp', 'img/cocora2-s.webp', 'img/cocora3-s.webp', 'img/cocora4-s.webp', 'img/cocora5-s.webp', 'img/cocora6-s.webp', 'img/cocora7-s.webp', 'img/comida1-s.webp', 'img/comida2-s.webp', 'img/cordoba-s.webp', 'img/croquetas-s.webp', 'img/empanada-s.webp', 'img/filandia-s.webp', 'img/filandia2-s.webp', 'img/filandia3-s.webp', 'img/filandia4-s.webp', 'img/filandia5-s.webp', 'img/filandia6-s.webp', 'img/filandia7-s.webp', 'img/filandia8-s.webp', 'img/filandia9-s.webp', 'img/genova-s.webp', 'img/hamburguesa-s.webp', 'img/heroCocora-s.webp', 'img/jardin-s.webp', 'img/jardin2-s.webp', 'img/mariposario-s.webp', 'img/montenegro-s.webp', 'img/museo-s.webp', 'img/palma-s.webp', 'img/palmsSign-s.webp', 'img/parque-s.webp', 'img/parque2-s.webp', 'img/parque3-s.webp', 'img/pijao-s.webp', 'img/pijao2-s.webp', 'img/pijao3-s.webp', 'img/quimbaya-s.webp', 'img/quindio-s.webp', 'img/salento-s.webp', 'img/salento2-s.webp', 'img/salento3-s.webp', 'img/salento4-s.webp', 'img/salento5-s.webp', 'img/sancocho-s.webp', 'img/tebaida-s.webp', 'img/tebaida2-s.webp', 'img/trucha-s.webp'];
 const MAX_TILES = 400; /* pedazos de mapa guardados como máximo */
 
 self.addEventListener('install', e => {

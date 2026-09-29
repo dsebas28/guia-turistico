@@ -151,7 +151,7 @@ img{display:block;max-width:100%}
 
 /* ============ MAPA DE LA REGIÓN ============ */
 .regmap{padding-bottom:0}
-.rm-frame{position:relative;margin:0 clamp(8px,1.5vw,20px);border-radius:28px;overflow:hidden;border:1px solid var(--line2);box-shadow:0 60px 120px -60px rgba(60,201,160,.5)}
+.rm-frame{position:relative;isolation:isolate;margin:0 clamp(8px,1.5vw,20px);border-radius:28px;overflow:hidden;border:1px solid var(--line2);box-shadow:0 60px 120px -60px rgba(60,201,160,.5)}
 #regionMap{height:min(78vh,760px);min-height:460px;background:#08140E}
 .rm-ui{position:absolute;left:16px;right:16px;bottom:16px;z-index:500;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;pointer-events:none}
 .rm-ui>*{pointer-events:auto}
@@ -159,7 +159,7 @@ img{display:block;max-width:100%}
 .rm-legend>span{display:inline-flex;align-items:center;gap:7px}
 .rm-legend i{width:11px;height:11px;border-radius:50%}
 .rm-legend .lt{background:var(--gold);box-shadow:0 0 10px var(--gold)}
-.rm-legend .lp{background:var(--pink);border-radius:3px;transform:rotate(45deg);width:9px;height:9px}
+.rm-legend .lp{background:var(--panel2);border:2.5px solid var(--pink);width:13px;height:13px}
 .rm-legend .li{background:var(--teal);box-shadow:0 0 10px var(--teal)}
 @media (max-width:640px){#regionMap{height:72vh;min-height:420px}.rm-legend{font-size:12px;gap:10px;padding:8px 12px}}
 /* marcadores del mapa grande */
@@ -170,9 +170,12 @@ img{display:block;max-width:100%}
 .rtown:hover i,.rtown.on i{transform:scale(1.3)}
 .rtown.on b{color:var(--gold)}
 .rtown.in i{background:var(--teal);box-shadow:0 0 0 2px var(--teal),0 0 22px 4px rgba(168,224,99,.6)}
-.rplace{width:14px;height:14px;transform:rotate(45deg);border-radius:3px;background:var(--pink);border:2px solid #0A1A10;box-shadow:0 0 14px rgba(232,116,59,.8);transition:transform .3s var(--spring)}
-.rplace:hover{transform:rotate(45deg) scale(1.35)}
-.rplace.in{background:var(--teal);box-shadow:0 0 16px rgba(168,224,99,.9)}
+/* lugares turísticos en el mapa: pin redondo con su foto */
+.rplace{width:46px;height:46px;border-radius:50%;overflow:hidden;background:var(--panel2);border:3px solid var(--pink);box-shadow:0 0 0 2px #0A1A10,0 6px 18px rgba(0,0,0,.6),0 0 18px rgba(232,116,59,.6);transition:transform .3s var(--spring)}
+.rplace img{width:100%;height:100%;object-fit:cover}
+.rplace:hover{transform:scale(1.25)}
+.rplace.in{border-color:var(--teal);box-shadow:0 0 0 2px #0A1A10,0 6px 18px rgba(0,0,0,.6),0 0 18px rgba(168,224,99,.8)}
+@media (max-width:640px){.rplace{width:36px;height:36px;border-width:2.5px}}
 /* restaurantes y hospedajes con su ubicación exacta */
 .rdot{width:12px;height:12px;border-radius:50%;border:2px solid #0A1A10;transition:transform .3s var(--spring)}
 .rdot:hover{transform:scale(1.4)}
@@ -185,13 +188,17 @@ img{display:block;max-width:100%}
 .rm-layers button[aria-pressed="true"]{background:#fff;color:var(--bg);border-color:#fff}
 .rm-left{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .rpop{display:flex;flex-direction:column;gap:8px;width:250px;max-width:66vw}
-.rpop img{width:100%;height:110px;object-fit:cover;border-radius:10px}
+.rpop img{width:100%;height:120px;object-fit:cover;border-radius:10px}
+.rpop .rph{position:relative;display:block;width:100%;cursor:zoom-in}
+.rpop .rph em{position:absolute;right:6px;bottom:6px;display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;background:rgba(6,17,12,.8);font-style:normal;font-size:11.5px;font-weight:800;color:#fff}
+.rpop .rph em.real{left:6px;right:auto;background:var(--teal);color:#0A1A10}
+.rpop .dir{font-size:12.5px;font-weight:800;color:var(--gold)}
 .rpop small{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
 .rpop b{font-family:'Anton';font-weight:400;font-size:21px;text-transform:uppercase;line-height:1}
 .rpop span{color:var(--muted);font-size:13px;line-height:1.45}
 .rpop .row{display:flex;gap:6px;margin-top:2px}
 .rpop .btn{min-height:36px;padding:0 12px;font-size:12.5px;flex:1}
-.rpop .btn:has(svg:only-child){flex:0 0 40px;padding:0}
+.rpop .btn.only-ic{flex:0 0 40px;padding:0}
 
 /* Leaflet en oscuro */
 .leaflet-container{font-family:'Figtree',sans-serif;background:#08140E !important}
@@ -237,6 +244,10 @@ img{display:block;max-width:100%}
 .card .tchip.txt{padding:6px 12px;font-size:12.5px}
 .card .tchip .wx{width:24px;height:24px}
 .card .typ{position:absolute;top:12px;left:12px;z-index:1;padding:6px 11px;border-radius:999px;background:var(--grad);color:#0A1A10;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+/* cuántas fotos tiene y si la principal es del propio sitio */
+.card .phc{position:absolute;right:12px;bottom:12px;z-index:1;display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:rgba(6,17,12,.72);backdrop-filter:blur(8px);font-size:12.5px;font-weight:800}
+.card .real{position:absolute;left:12px;bottom:12px;z-index:1;padding:5px 10px;border-radius:999px;background:var(--teal);color:#0A1A10;font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.card.added .real{left:56px}
 .card .check{position:absolute;left:12px;bottom:12px;z-index:1;width:36px;height:36px;border-radius:50%;background:var(--teal);color:#0A1A10;display:flex;align-items:center;justify-content:center;transform:scale(0);transition:transform .45s var(--spring)}
 .card.added .check{transform:scale(1)}
 .card .body{padding:18px;display:flex;flex-direction:column;gap:8px;flex:1}
@@ -291,7 +302,7 @@ img{display:block;max-width:100%}
 .gallery .w{grid-column:span 2}.gallery .h{grid-row:span 2}
 @media (max-width:900px){.gallery{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:180px}}
 @media (max-width:520px){.gallery{grid-auto-rows:150px;gap:8px}.gallery .w{grid-column:span 2}}
-.lightbox{position:fixed;inset:0;z-index:260;background:rgba(3,9,6,.95);display:flex;align-items:center;justify-content:center;padding:60px 70px;animation:fade .3s ease both}
+.lightbox{position:fixed;inset:0;z-index:3000;background:rgba(3,9,6,.95);display:flex;align-items:center;justify-content:center;padding:60px 70px;animation:fade .3s ease both}
 .lightbox figure{max-width:100%;max-height:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
 .lightbox img{max-width:100%;max-height:calc(100vh - 150px);border-radius:14px;object-fit:contain;box-shadow:0 40px 100px -30px rgba(0,0,0,.9)}
 .lightbox figcaption{font-size:13px;color:var(--muted);text-align:center}
@@ -468,8 +479,16 @@ a.ic-btn{color:var(--muted)}
 .scrim.open{opacity:1;pointer-events:auto}
 .drawer{position:fixed;z-index:210;top:10px;right:10px;bottom:10px;width:min(560px,calc(100% - 20px));border-radius:26px;background:var(--panel);border:1px solid var(--line2);overflow:auto;transform:translateX(calc(100% + 30px));transition:transform .65s var(--ease);box-shadow:0 40px 80px -30px rgba(0,0,0,.9)}
 .drawer.open{transform:none}
-.d-art{position:relative;height:320px;overflow:hidden;background:var(--panel2)}
-.d-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.d-art{position:relative;height:340px;overflow:hidden;background:var(--panel2)}
+.d-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:fade .4s ease both}
+.d-main{position:absolute;inset:0;cursor:zoom-in}
+/* tira de miniaturas de la galería del panel */
+.d-thumbs{display:flex;gap:6px;overflow-x:auto;padding:10px 26px 2px;scrollbar-width:thin;scrollbar-color:var(--panel3) transparent}
+.d-thumbs button{position:relative;flex:0 0 72px;height:54px;border-radius:10px;overflow:hidden;border:2px solid transparent;opacity:.6;transition:opacity .3s,border-color .3s}
+.d-thumbs button:hover{opacity:1}
+.d-thumbs button.on{opacity:1;border-color:var(--gold)}
+.d-thumbs img{width:100%;height:100%;object-fit:cover}
+.d-thumbs i{position:absolute;right:4px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 2px #0A1A10}
 .d-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,var(--panel));pointer-events:none}
 .d-cred{position:absolute;left:0;right:60px;bottom:0;z-index:1;padding:22px 20px 8px;color:rgba(255,255,255,.7);font-size:11px}
 .d-close{position:absolute;top:14px;right:14px;z-index:2;width:48px;height:48px;border-radius:50%;background:rgba(6,17,12,.7);border:1px solid var(--line2);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;transition:transform .5s var(--spring)}
@@ -488,7 +507,7 @@ a.ic-btn{color:var(--muted)}
 .wbox b{font-family:'Anton';font-weight:400;font-size:36px}
 .wbox small{display:block;color:var(--muted)}
 .d-links{display:flex;gap:8px;flex-wrap:wrap}
-.d-links .btn{flex:1;min-width:150px}
+.d-links .btn{flex:1 1 150px;min-width:0;white-space:normal;text-align:center;line-height:1.2;padding:8px 14px}
 .d-foot{position:sticky;bottom:0;padding:16px 26px 22px;background:linear-gradient(transparent,var(--panel) 30%);display:flex;gap:10px;flex-wrap:wrap}
 .d-foot .btn{flex:1;min-width:150px}
 

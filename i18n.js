@@ -138,6 +138,7 @@ Object.assign(I18N.es, {
   'map.hint':'Cada número es una parada en el orden del día. Toca un día en la leyenda para verlo solo.',
   'map.start':'Punto de salida', 'map.retry':'Reintentar',
   'rmap.food':'Dónde comer', 'rmap.stays':'Dónde dormir',
+  'note.photoReal':'Foto real del lugar', 'note.photoRealShort':'Foto real', 'btn.realPhotos':'Fotos y opiniones en Google', 'aria.bigPhoto':'Ver la foto en grande',
   'fc.rain':'prob. de lluvia', 'fc.far':'Pronóstico: 16 días antes', 'fc.title':'Pronóstico para {town}',
   'off.ready':'Guía lista para usar sin internet', 'map.all':'Todos los días',
   'foot.climate':'Clima: Open-Meteo · Mapa: satélite de Esri · Emergencias: 123'
@@ -155,6 +156,7 @@ Object.assign(I18N.en, {
   'map.hint':'Each number is a stop in the order of the day. Tap a day in the legend to see it alone.',
   'map.start':'Starting point', 'map.retry':'Try again',
   'rmap.food':'Where to eat', 'rmap.stays':'Where to stay',
+  'note.photoReal':'Real photo of this place', 'note.photoRealShort':'Real photo', 'btn.realPhotos':'Photos & reviews on Google', 'aria.bigPhoto':'See the photo full size',
   'fc.rain':'chance of rain', 'fc.far':'Forecast: 16 days before', 'fc.title':'Forecast for {town}',
   'off.ready':'Guide ready to use offline', 'map.all':'All days',
   'foot.climate':'Weather: Open-Meteo · Map: Esri satellite · Emergencies: 123'

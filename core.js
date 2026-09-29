@@ -25,7 +25,15 @@
   RV.pic = (k, big, alt, eager) => `<img src="${RV.pSrc(k, big)}" data-k="${k}" data-w="${big ? 1280 : 640}" alt="${esc(alt || PHOTOS[k].t)}" ${eager ? '' : 'loading="lazy"'} decoding="async">`;
   document.addEventListener('error', e => { const im = e.target; if (im.tagName === 'IMG' && im.dataset.k && !im.dataset.fb){ im.dataset.fb = 1; im.src = RV.pRemote(im.dataset.k, im.dataset.w); } }, true);
   RV.credit = k => `${t('photo.by')}: ${esc(PHOTOS[k].by)} · ${esc(PHOTOS[k].lic)} · Wikimedia Commons`;
-  RV.mainPh = it => Array.isArray(it.ph) ? it.ph[0] : it.ph;
+  /* todas las fotos de un lugar, restaurante u hotel: las suyas (ph) más las de la galería (photos2.js).
+     Primero van las fotos reales del propio sitio (PHOTOS[k].of === id), luego el resto. */
+  RV.photos = it => {
+    const own = Array.isArray(it.ph) ? it.ph : [it.ph], extra = (typeof GALLERY !== 'undefined' && GALLERY[it.id]) || [];
+    const all = [...new Set([...own, ...extra])].filter(k => PHOTOS[k]);
+    return [...all.filter(k => PHOTOS[k].of === it.id), ...all.filter(k => PHOTOS[k].of !== it.id)];
+  };
+  RV.isReal = (k, it) => !!(PHOTOS[k] && PHOTOS[k].of === it.id);
+  RV.mainPh = it => RV.photos(it)[0] || (Array.isArray(it.ph) ? it.ph[0] : it.ph);
 
   /* ================= ÍNDICE ================= */
   const ALL = RV.ALL = {};
@@ -39,6 +47,8 @@
   RV.slot = s => t('slot.' + s);
   RV.type = s => t('type.' + s);
   RV.mapsUrl = it => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(`${it.name}, ${RV.zoneName(it.zone)}, Quindío, Colombia`);
+  /* ruta en Google Maps hasta el sitio (con su ubicación exacta si la tenemos) */
+  RV.dirUrl = it => { const ll = (it.lat && [it.lat, it.lon]) || (RV.exactLL && RV.exactLL(it.id)); return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(ll ? ll.join(',') : `${it.name}, ${RV.zoneName(it.zone)}, Quindío, Colombia`); };
   RV.webUrl = it => 'https://www.google.com/search?q=' + encodeURIComponent(`${it.name} ${RV.zoneName(it.zone)} Quindío`);
 
   /* ================= CLIMA ================= */

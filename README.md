@@ -69,6 +69,7 @@ El mapa sigue las carreteras y numera las paradas. Cada día muestra el pronóst
 - **Portada animada**: al bajar, la palabra QUINDÍO crece y se desvanece y se abre la foto del Valle del Cocora.
 - **El mapa**: los 12 pueblos y todos los lugares en un mapa satelital. Tocas un pueblo para ver su guía o un lugar para agregarlo a tu tour. Con los botones "Dónde comer" y "Dónde dormir" aparecen los restaurantes y hospedajes de los que tenemos la ubicación exacta.
 - **Tours sugeridos**: un clic carga un tour completo (lugares, restaurantes y hospedaje por noche) que luego puedes cambiar.
+- **Galerías de fotos**: cada lugar, restaurante y hotel tiene varias fotos; se ven en el panel de detalle y en pantalla completa.
 - **Lugares**: tarjetas con cómo llegar, cuánto tiempo necesitas, consejos y el **clima en vivo**.
 - **Dónde comer** y **dónde dormir**: restaurantes y hospedajes reales del Quindío. No hay precios, solo recomendaciones.
 - **Pueblo por pueblo**: pestañas con una foto grande por pueblo. Son 12: Armenia, Circasia, Filandia, Salento, Montenegro, Quimbaya, Buenavista, Calarcá, Pijao, Génova, Córdoba y La Tebaida.
@@ -101,6 +102,7 @@ Y entra a http://localhost:8000 (en inglés: http://localhost:8000/?lang=en).
 | `styles.css` | Colores, letras y diseño, ordenado por secciones. |
 | `data.js` | Fotos, los primeros 7 pueblos, lugares, restaurantes, hospedajes y tours sugeridos. |
 | `data2.js` | Los 5 pueblos nuevos, más lugares, calendario, tarifas de transporte y coordenadas de los pueblos. |
+| `photos2.js` | Más fotos: galerías de cada lugar, platos típicos y entorno de cada pueblo, con sus créditos. Aquí se agregan fotos propias de un negocio. |
 | `geo.js` | Ubicación exacta de los restaurantes y hospedajes que la tienen. |
 | `routes.js` | Rutas por carretera entre pueblos: kilómetros, tiempo y trazado. |
 | `i18n.js` | Textos de botones y títulos en español e inglés. |
@@ -115,7 +117,13 @@ Y entra a http://localhost:8000 (en inglés: http://localhost:8000/?lang=en).
 | `robots.txt`, `sitemap.xml` | Para que Google encuentre la página. |
 | `PUBLICAR.md` | Cómo publicar, actualizar y aparecer en Google. |
 
-Los archivos `.js` se cargan en este orden y el orden importa: `data.js`, `data2.js`, `geo.js`, `routes.js`, `i18n.js`, `en.js`, `en2.js`, `core.js`, `maps.js`, `ui.js`, `pdf.js`.
+### Sobre las fotos de restaurantes y hoteles
+
+Las fotos de la página tienen licencia libre (Wikimedia Commons), porque las de Google, Booking o Instagram tienen derechos de autor y no se pueden copiar. Casi ningún restaurante u hotel del Quindío tiene fotos libres, así que sus galerías muestran fotos del tipo de plato y del pueblo, con la nota "Foto ilustrativa". Cuando hay una foto del propio negocio, sale primero con la etiqueta **Foto real** (hoy: Café Jesús Martín). Cada ficha tiene el botón **Fotos y opiniones en Google**, que abre las fotos reales del sitio en Google Maps.
+
+Para poner fotos reales de un negocio (tomadas por ti o enviadas por el negocio con su permiso), sigue las instrucciones al inicio de `photos2.js`.
+
+Los archivos `.js` se cargan en este orden y el orden importa: `data.js`, `data2.js`, `photos2.js`, `geo.js`, `routes.js`, `i18n.js`, `en.js`, `en2.js`, `core.js`, `maps.js`, `ui.js`, `pdf.js`.
 
 ## Cómo actualizar la guía
 
