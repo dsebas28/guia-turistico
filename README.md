@@ -6,6 +6,64 @@ Guía turística **gratuita** del Eje Cafetero (Quindío, Colombia). Eliges los 
 
 Funciona en español e inglés. El diseño es oscuro y cinematográfico: fotos a pantalla completa, colores del Eje Cafetero (verde, dorado y naranja café) y títulos grandes.
 
+## Capturas
+
+Tomadas de la página publicada el 28 de septiembre de 2026. Están en la carpeta [capturas](capturas/).
+
+### Portada
+
+Al bajar, la palabra QUINDÍO crece y se desvanece, y se abre la foto del Valle del Cocora.
+
+| Al entrar | Al bajar |
+|---|---|
+| ![Portada con la palabra QUINDÍO](capturas/01-portada.jpg) | ![Portada con el texto de bienvenida](capturas/02-portada-texto.jpg) |
+
+### Tours sugeridos y mapa de la región
+
+![Tours sugeridos](capturas/03-tours-sugeridos.jpg)
+
+![Mapa satelital con los 12 pueblos](capturas/04-mapa-region.jpg)
+
+### Lugares, dónde comer y dónde dormir
+
+![Lugares con clima en vivo](capturas/05-lugares.jpg)
+
+| Dónde comer | Dónde dormir |
+|---|---|
+| ![Restaurantes](capturas/06-donde-comer.jpg) | ![Hospedajes](capturas/07-donde-dormir.jpg) |
+
+### Pueblo por pueblo
+
+| Foto y nombre del pueblo | Qué hacer, dónde comer y dormir |
+|---|---|
+| ![Salento](capturas/08-pueblos.jpg) | ![Filandia en detalle](capturas/08b-pueblo-detalle.jpg) |
+
+### Postales
+
+| | |
+|---|---|
+| ![Postales del Quindío](capturas/09-postales.jpg) | ![Galería de fotos](capturas/09b-postales-galeria.jpg) |
+
+### Cuándo ir y cómo moverse
+
+| Cuándo ir | Cómo moverse |
+|---|---|
+| ![Calendario de temporadas y fiestas](capturas/10-cuando-ir.jpg) | ![Tarifas de transporte](capturas/11-como-moverse.jpg) |
+
+### Tu tour
+
+El mapa sigue las carreteras y numera las paradas. Cada día muestra el pronóstico y cada traslado sus kilómetros.
+
+![Tu tour con el mapa del recorrido](capturas/12-tu-tour.jpg)
+
+![Itinerario por días](capturas/13-itinerario.jpg)
+
+### En el celular
+
+| Portada | Tu tour | Pueblos |
+|---|---|---|
+| ![Portada en celular](capturas/14-celular-portada.jpg) | ![Tour en celular](capturas/15-celular-tour.jpg) | ![Pueblos en celular](capturas/16-celular-pueblos.jpg) |
+
 ## Qué tiene la página
 
 - **Portada animada**: al bajar, la palabra QUINDÍO crece y se desvanece y se abre la foto del Valle del Cocora.
