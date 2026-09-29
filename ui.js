@@ -215,8 +215,8 @@
     RV.refreshRegion && RV.refreshRegion();
   }
 
-  /* ================= MAPAS (Leaflet + OpenStreetMap en modo oscuro) ================= */
-  const DAYC = ['#FF4D8D','#FFB020','#35E0B0','#A45CFF','#4DA3FF','#FF7A45','#E5E058'];
+  /* ================= MAPAS (Leaflet + satélite de Esri) ================= */
+  const DAYC = ['#F2A33A','#A8E063','#5CC8FF','#E8743B','#F6D365','#3CC9A0','#F3EFE4'];
   let leaflet = null;
   function loadLeaflet(){
     if (leaflet) return leaflet;
@@ -230,8 +230,13 @@
     return leaflet;
   }
   RV.loadLeaflet = loadLeaflet;
-  /* OpenStreetMap, oscurecido con un filtro de CSS (clase .dark-tiles en styles.css) */
-  RV.tiles = Lf => Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:18, className:'dark-tiles', attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'});
+  /* Satélite de Esri con carreteras encima. No pide clave y funciona aunque abras la página con doble clic
+     (los servidores de OpenStreetMap bloquean las páginas abiertas desde un archivo). */
+  const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+  RV.tiles = Lf => Lf.layerGroup([
+    Lf.tileLayer(ESRI + 'World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:18, maxNativeZoom:17, className:'sat-tiles', attribution:'Imágenes: <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, Maxar, Earthstar Geographics'}),
+    Lf.tileLayer(ESRI + 'Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', {maxZoom:18, maxNativeZoom:17, className:'road-tiles', attribution:'Vías: Esri, HERE, © OpenStreetMap'})
+  ]);
   /* curva suave entre dos puntos, para que las rutas no se monten una sobre otra */
   function arc(a, b, bend){
     const [y1,x1] = a, [y2,x2] = b, mx = (x1+x2)/2, my = (y1+y2)/2, dx = x2-x1, dy = y2-y1;

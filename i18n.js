@@ -59,7 +59,7 @@ es: {
   'pdf.before':'Antes de salir', 'pdf.b1':'Confirma horarios de restaurantes, parques y buses: pueden cambiar.', 'pdf.b2':'Escribe o llama a tu hospedaje para confirmar reserva y cómo llegar.', 'pdf.b3':'Horarios sugeridos y traslados aproximados. Emergencias en Colombia: 123.',
   'pdf.itinerary':'Itinerario', 'pdf.freeDay':'Día libre para descansar o explorar a tu ritmo.', 'pdf.until':'hasta {h}', 'pdf.sleepTonight':'Dónde duermes esta noche', 'pdf.townsTitle':'Guía de los pueblos de tu tour', 'pdf.guideOf':'Guía de {town}',
   'pdf.notes':'Notas', 'pdf.page':'Página {p} de {n}', 'pdf.preparing':'Preparando tu guía…', 'pdf.madeWith':'Armado en Ruta Verde · Guía gratuita del Eje Cafetero', 'pdf.disclaimer':'Horarios sugeridos y traslados aproximados. Confirma horarios y disponibilidad antes de salir. Emergencias: 123.',
-  'foot.big':'Buen <span class="serif">viaje.</span>', 'foot.brand':'Ruta Verde · Guía gratuita del Eje Cafetero', 'foot.climate':'Clima: Open-Meteo · Mapa: OpenStreetMap · Emergencias: 123', 'foot.note':'Recomendaciones independientes: nadie paga por aparecer aquí.', 'foot.credits':'Créditos de las fotos ▾',
+  'foot.big':'Buen <span class="serif">viaje.</span>', 'foot.brand':'Ruta Verde · Guía gratuita del Eje Cafetero', 'foot.climate':'Clima: Open-Meteo · Mapa: satélite de Esri · Emergencias: 123', 'foot.note':'Recomendaciones independientes: nadie paga por aparecer aquí.', 'foot.credits':'Créditos de las fotos ▾',
   'mbar.stops':'elementos en tu tour', 'mbar.see':'Ver mi tour'
 },
 en: {
@@ -119,7 +119,7 @@ en: {
   'pdf.before':'Before you go', 'pdf.b1':'Check opening hours for restaurants, parks and buses: they can change.', 'pdf.b2':'Message or call your host to confirm your booking and directions.', 'pdf.b3':'Suggested times and approximate travel. Emergencies in Colombia: 123.',
   'pdf.itinerary':'Itinerary', 'pdf.freeDay':'Free day to rest or explore at your own pace.', 'pdf.until':'until {h}', 'pdf.sleepTonight':'Where you sleep tonight', 'pdf.townsTitle':'Guide to the towns on your tour', 'pdf.guideOf':'{town} guide',
   'pdf.notes':'Notes', 'pdf.page':'Page {p} of {n}', 'pdf.preparing':'Preparing your guide…', 'pdf.madeWith':'Made with Ruta Verde · Free Coffee Region guide', 'pdf.disclaimer':'Suggested times and approximate travel. Check hours and availability before you go. Emergencies: 123.',
-  'foot.big':'Safe <span class="serif">travels.</span>', 'foot.brand':'Ruta Verde · Free Coffee Region guide', 'foot.climate':'Weather: Open-Meteo · Map: OpenStreetMap · Emergencies: 123', 'foot.note':'Independent recommendations: nobody pays to be listed here.', 'foot.credits':'Photo credits ▾',
+  'foot.big':'Safe <span class="serif">travels.</span>', 'foot.brand':'Ruta Verde · Free Coffee Region guide', 'foot.climate':'Weather: Open-Meteo · Map: Esri satellite · Emergencies: 123', 'foot.note':'Independent recommendations: nobody pays to be listed here.', 'foot.credits':'Photo credits ▾',
   'mbar.stops':'items in your tour', 'mbar.see':'See my tour'
 }
 };
@@ -137,7 +137,7 @@ Object.assign(I18N.es, {
   'town.tabs':'Elige un pueblo',
   'map.hint':'Cada número es una parada en el orden del día. Toca un día en la leyenda para verlo solo.',
   'map.start':'Punto de salida', 'map.retry':'Reintentar', 'map.all':'Todos los días',
-  'foot.climate':'Clima: Open-Meteo · Mapa: OpenStreetMap · Emergencias: 123'
+  'foot.climate':'Clima: Open-Meteo · Mapa: satélite de Esri · Emergencias: 123'
 });
 Object.assign(I18N.en, {
   'nav.map':'Map', 'nav.gallery':'Postcards',
@@ -151,5 +151,5 @@ Object.assign(I18N.en, {
   'town.tabs':'Choose a town',
   'map.hint':'Each number is a stop in the order of the day. Tap a day in the legend to see it alone.',
   'map.start':'Starting point', 'map.retry':'Try again', 'map.all':'All days',
-  'foot.climate':'Weather: Open-Meteo · Map: OpenStreetMap · Emergencies: 123'
+  'foot.climate':'Weather: Open-Meteo · Map: Esri satellite · Emergencies: 123'
 });

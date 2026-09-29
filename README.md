@@ -2,12 +2,12 @@
 
 Guía turística **gratuita** del Eje Cafetero (Quindío, Colombia). Eliges los lugares que quieres ver, dónde comer y dónde dormir, y la página arma tu recorrido por días, con horarios, mapa y cómo llegar. Al final te llevas la guía en PDF o la compartes con un enlace.
 
-Funciona en español e inglés. El diseño es oscuro y cinematográfico: fotos a pantalla completa, degradado de atardecer y títulos grandes.
+Funciona en español e inglés. El diseño es oscuro y cinematográfico: fotos a pantalla completa, colores del Eje Cafetero (verde, dorado y naranja café) y títulos grandes.
 
 ## Qué tiene la página
 
 - **Portada animada**: al bajar, la palabra QUINDÍO crece y se desvanece y se abre la foto del Valle del Cocora.
-- **El mapa**: los 12 pueblos y todos los lugares en un mapa oscuro. Tocas un pueblo para ver su guía o un lugar para agregarlo a tu tour.
+- **El mapa**: los 12 pueblos y todos los lugares en un mapa satelital. Tocas un pueblo para ver su guía o un lugar para agregarlo a tu tour.
 - **Tours sugeridos**: un clic carga un tour completo (lugares, restaurantes y hospedaje por noche) que luego puedes cambiar.
 - **Lugares**: tarjetas con cómo llegar, cuánto tiempo necesitas, consejos y el **clima en vivo**.
 - **Dónde comer** y **dónde dormir**: restaurantes y hospedajes reales del Quindío. No hay precios, solo recomendaciones.
@@ -69,7 +69,7 @@ La página son archivos sueltos: no necesita servidor ni base de datos. Se puede
 La página usa estos servicios gratuitos. Todos cargan solo cuando se necesitan:
 
 - [Open-Meteo](https://open-meteo.com/): clima en vivo de cada lugar.
-- [Leaflet](https://leafletjs.com/) con mapas de OpenStreetMap, oscurecidos con CSS: el mapa de la región y el de tu tour.
+- [Leaflet](https://leafletjs.com/) con la vista satelital y las vías de [Esri](https://www.esri.com/): el mapa de la región y el de tu tour. Funciona aunque abras la página con doble clic.
 - [Google Fonts](https://fonts.google.com/): letras Anton y Figtree.
 - [jsPDF](https://github.com/parallax/jsPDF): crear el PDF.
 
