@@ -210,6 +210,11 @@ img{display:block;max-width:100%}
 .leaflet-bar{border:1px solid var(--line2) !important;border-radius:12px !important;overflow:hidden}
 .leaflet-control-attribution{background:rgba(6,17,12,.7) !important;color:var(--dim) !important;font-size:10.5px}
 .leaflet-control-attribution a{color:var(--muted) !important}
+/* en el celular los créditos del mapa van en una sola línea; al tocarlos se ven completos */
+@media (max-width:640px){
+  .leaflet-control-attribution{max-width:62vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:9.5px;cursor:pointer}
+  .leaflet-control-attribution:hover,.leaflet-control-attribution:focus-within{max-width:calc(100vw - 40px);white-space:normal}
+}
 .leaflet-div-icon{background:none;border:0}
 /* satélite un poco oscurecido para que se lean los marcadores; carreteras suaves encima */
 .sat-tiles{filter:brightness(.62) saturate(1.1) contrast(1.05)}

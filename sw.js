@@ -5,11 +5,11 @@
    sin señal, la guía y su tour siguen abriendo.
    Cuando cambies algún archivo de la página, sube el número de VERSION para que se actualice.
    ============================================================ */
-const VERSION = 'rv-8';
+const VERSION = 'rv-9';
 const CORE = [
-  './', 'index.html', 'styles.css?v=7', 'manifest.webmanifest',
-  'data.js?v=7', 'data2.js?v=7', 'photos2.js?v=7', 'geo.js?v=7', 'routes.js?v=7', 'i18n.js?v=7', 'en.js?v=7', 'en2.js?v=7',
-  'core.js?v=7', 'maps.js?v=7', 'ui.js?v=7', 'pdf.js?v=7',
+  './', 'index.html', 'styles.css?v=8', 'manifest.webmanifest',
+  'data.js?v=8', 'data2.js?v=8', 'photos2.js?v=8', 'geo.js?v=8', 'routes.js?v=8', 'i18n.js?v=8', 'en.js?v=8', 'en2.js?v=8',
+  'core.js?v=8', 'maps.js?v=8', 'ui.js?v=8', 'pdf.js?v=8',
   'img/heroCocora-l.webp', 'img/icon-192.png'
 ];
 const LIBS = [

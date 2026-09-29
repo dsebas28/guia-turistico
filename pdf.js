@@ -98,13 +98,18 @@
 
     /* días */
     state.days.forEach((d,i) => {
-      doc.addPage(); y = M;
-      fill(C.forest); doc.rect(0, 0, W, 34, 'F');
-      T(upper(`${t('day')} ${i+1} · ${t('day.from', {town:zn(RV.startZone(i))})}`), M, 15, {s:10, b:true, c:C.palm}); T(state.date ? RV.dayDate(i).replace(/^\S/, c => c.toUpperCase()) : t('pdf.itinerary'), M, 26, {s:20, b:true, c:C.paper});
+      /* si en la página queda mucho espacio (por ejemplo, solo cayó ahí la noche del día anterior),
+         el día sigue en esa misma página con una franja compacta; si no, empieza página nueva */
+      const inline = i > 0 && (H - 20 - y) > 110;
+      let by;
+      if (inline){ y += 4; by = y; fill(C.forest); doc.roundedRect(M - 4, by, CW + 8, 30, 3, 3, 'F'); }
+      else { doc.addPage(); by = 0; fill(C.forest); doc.rect(0, 0, W, 34, 'F'); }
+      const ty1 = by + (inline ? 11 : 15), ty2 = by + (inline ? 22 : 26);
+      T(upper(`${t('day')} ${i+1} · ${t('day.from', {town:zn(RV.startZone(i))})}`), M, ty1, {s:10, b:true, c:C.palm}); T(state.date ? RV.dayDate(i).replace(/^\S/, c => c.toUpperCase()) : t('pdf.itinerary'), M, ty2, {s:20, b:true, c:C.paper});
       /* pronóstico del día, si la fecha ya está dentro de los 16 días que da Open-Meteo */
       const f = RV.dayForecast(i);
-      if (f && f !== 'far') T(`${t('wx.' + RV.wxType(f.code))} · ${Math.round(f.min)}°–${Math.round(f.max)}°C${f.rain != null ? ` · ${f.rain}% ${t('fc.rain')}` : ''} · ${zn(f.zone)}`, W - M, 26, {s:9.5, c:C.mint, a:'right'});
-      y = 46;
+      if (f && f !== 'far') T(`${t('wx.' + RV.wxType(f.code))} · ${Math.round(f.min)}°–${Math.round(f.max)}°C${f.rain != null ? ` · ${f.rain}% ${t('fc.rain')}` : ''} · ${zn(f.zone)}`, W - M, ty2, {s:9.5, c:C.mint, a:'right'});
+      y = by + (inline ? 42 : 46);
       const sch = RV.schedule(i);
       if (!sch.length){ T(t('pdf.freeDay'), M, y, {s:11, i:true, c:C.muted}); y += 10; }
       sch.forEach(s => {

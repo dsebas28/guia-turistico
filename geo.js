@@ -31,5 +31,18 @@ const GEO = {
   "h-casavictoria":[4.33674, -75.70418],
   "h-genovareal":[4.20786, -75.78908],
   "h-mocawa":[4.44639, -75.81343],
-  "h-herencia":[4.47973, -75.76566]
+  "h-herencia":[4.47973, -75.76566],
+  /* agregados después, buscados en OpenStreetMap (Overpass y Photon) y revisados a mano */
+  "r-robles":[4.6747, -75.59858],
+  "r-parquefood":[4.53848, -75.76773],
+  "r-concorde":[4.36531, -75.71765],
+  "h-coffeetree":[4.63431, -75.57124],
+  "h-piedemonte":[4.64508, -75.58342],
+  "h-bidea":[4.67314, -75.65679],
+  "h-balsora":[4.71105, -75.61045],
+  "h-bremen":[4.63004, -75.61689],
+  "h-orquideas":[4.61744, -75.63375],
+  "h-lacima":[4.35205, -75.73896],
+  "h-tarapaka":[4.33531, -75.70306],
+  "h-tukawa":[4.61545, -75.71718]
 };
