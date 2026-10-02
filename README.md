@@ -4,6 +4,8 @@ Guía turística **gratuita** del Eje Cafetero (Quindío, Colombia). Eliges los 
 
 **Página publicada:** https://dsebas28.github.io/guia-turistico/
 
+**Cómo está hecha por dentro:** [Guía del código](docs/GUIA-DEL-CODIGO.md) — estado del tour, enlace para compartir, reparto en días, horarios, clima, uso sin internet y dos idiomas, con fragmentos del código explicados.
+
 Funciona en español e inglés. El diseño es oscuro y cinematográfico: fotos a pantalla completa, colores del Eje Cafetero (verde, dorado y naranja café) y títulos grandes.
 
 ## Capturas
@@ -116,6 +118,7 @@ Y entra a http://localhost:8000 (en inglés: http://localhost:8000/?lang=en).
 | `img/` | Fotos en formato WebP, cada una en dos tamaños: `-s` (pequeña) y `-l` (grande). También `og.jpg` (la imagen al compartir en redes) y los íconos. |
 | `robots.txt`, `sitemap.xml` | Para que Google encuentre la página. |
 | `PUBLICAR.md` | Cómo publicar, actualizar y aparecer en Google. |
+| `docs/GUIA-DEL-CODIGO.md` | Explicación técnica del código. |
 
 ### Sobre las fotos de restaurantes y hoteles
 
